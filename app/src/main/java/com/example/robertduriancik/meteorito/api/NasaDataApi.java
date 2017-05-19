@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class NasaDataApi {
-    private static final String NASA_DATA_API_ENDPOINT = "https://data.nasa.gov/resource/y77d-th95.json";
+    private static final String NASA_DATA_API_ENDPOINT = "https://data.nasa.gov/";
     private final NasaDataService mService;
 
     public NasaDataApi() {
