@@ -13,23 +13,35 @@ import butterknife.ButterKnife;
 
 public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdapter.MeteoriteItemHolder> {
 
-    private List<String> mStringList;
+    public interface OnItemClickListener {
+        void onItemClick(String s);
+    }
 
-    public MeteoriteListAdapter(List<String> stringList) {
+    private final List<String> mStringList;
+    private final OnItemClickListener mListener;
+
+    public MeteoriteListAdapter(List<String> stringList, OnItemClickListener listener) {
         this.mStringList = stringList;
+        this.mListener = listener;
     }
 
     @Override
     public MeteoriteItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.meteorite_list_item, parent, false);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         return new MeteoriteItemHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MeteoriteItemHolder holder, int position) {
-        holder.mTextView.setText(mStringList.get(position));
+        holder.bind(mStringList.get(position), mListener);
     }
 
     @Override
@@ -45,6 +57,18 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
         public MeteoriteItemHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(final String item, final OnItemClickListener listener) {
+            mTextView.setText(item);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onItemClick(item);
+                    }
+                }
+            });
         }
     }
 }
