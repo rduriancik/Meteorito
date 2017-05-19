@@ -29,3 +29,5 @@ captures/
 .idea/dictionaries
 .idea/libraries
 .idea/vcs.xml
+libs/
+src/main/res/drawable/

@@ -1,7 +1,9 @@
-package com.example.robertduriancik.meteorito;
+package com.example.robertduriancik.meteorito.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import com.example.robertduriancik.meteorito.R;
 
 public class MainActivity extends AppCompatActivity {
 
