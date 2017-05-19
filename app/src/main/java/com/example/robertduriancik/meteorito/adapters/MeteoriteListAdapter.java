@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.robertduriancik.meteorito.R;
-import com.example.robertduriancik.meteorito.model.MeteoriteLanding;
+import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
 import java.util.List;
 

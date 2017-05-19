@@ -1,4 +1,4 @@
-package com.example.robertduriancik.meteorito.model;
+package com.example.robertduriancik.meteorito.models;
 
 import com.google.gson.annotations.SerializedName;
 
