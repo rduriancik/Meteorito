@@ -11,11 +11,16 @@ import android.widget.Toast;
 
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.MeteoriteListAdapter;
+import com.example.robertduriancik.meteorito.api.NasaDataApi;
+import com.example.robertduriancik.meteorito.model.MeteoriteLanding;
 
-import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 ///**
@@ -86,14 +91,31 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private void prepareRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
-
-        MeteoriteListAdapter meteoriteListAdapter = new MeteoriteListAdapter(Arrays.asList("TEST", "test", "Test", "TeSt"), this);
-        mRecyclerView.setAdapter(meteoriteListAdapter);
+        loadLandings();
     }
 
     @Override
-    public void onItemClick(String s) {
-        Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+    public void onItemClick(MeteoriteLanding meteoriteLanding) {
+        Toast.makeText(getActivity(), meteoriteLanding.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void populateRecyclerView(final List<MeteoriteLanding> meteoriteLandingList) {
+        mRecyclerView.setAdapter(new MeteoriteListAdapter(meteoriteLandingList, MeteoriteListFragment.this));
+    }
+
+    private void loadLandings() {
+        Call<List<MeteoriteLanding>> landingCall = new NasaDataApi().getService().getMeteoriteLandings();
+        landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
+            @Override
+            public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
+                populateRecyclerView(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     //
