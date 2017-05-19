@@ -13,6 +13,6 @@ import retrofit2.http.GET;
 
 public interface NasaDataService {
 
-    @GET("resource/y77d-th95.json")
+    @GET("resource/y77d-th95.json?$where=year>='2011-01-01T00:00:00'")
     Call<List<MeteoriteLanding>> getMeteoriteLandings();
 }

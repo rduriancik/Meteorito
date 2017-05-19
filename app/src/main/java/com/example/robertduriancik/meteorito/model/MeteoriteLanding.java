@@ -12,7 +12,7 @@ public class MeteoriteLanding {
 
     private long id;
     private String fall;
-    private int mass;
+    private double mass;
     private String name;
     private String nameType;
     @SerializedName("recclass")
@@ -40,11 +40,11 @@ public class MeteoriteLanding {
         this.fall = fall;
     }
 
-    public int getMass() {
+    public double getMass() {
         return mass;
     }
 
-    public void setMass(int mass) {
+    public void setMass(double mass) {
         this.mass = mass;
     }
 
