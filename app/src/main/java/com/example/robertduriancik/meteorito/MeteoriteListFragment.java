@@ -2,19 +2,26 @@ package com.example.robertduriancik.meteorito;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Arrays;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MeteoriteListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MeteoriteListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+
+///**
+// * A simple {@link Fragment} subclass.
+// * Activities that contain this fragment must implement the
+// * {@link MeteoriteListFragment.OnFragmentInteractionListener} interface
+// * to handle interaction events.
+// * Use the {@link MeteoriteListFragment#newInstance} factory method to
+// * create an instance of this fragment.
+// */
 public class MeteoriteListFragment extends Fragment {
 //    // TODO: Rename parameter arguments, choose names that match
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,13 +65,26 @@ public class MeteoriteListFragment extends Fragment {
 //        }
 //    }
 
+    @BindView(R.id.meteorite_list)
+    RecyclerView mRecyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
+        ButterKnife.bind(this, view);
+
+        prepareRecyclerView();
 
         return view;
+    }
+
+    private void prepareRecyclerView() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setHasFixedSize(true);
+
+        MeteoriteListAdapter meteoriteListAdapter = new MeteoriteListAdapter(Arrays.asList("TEST", "test", "Test", "TeSt"));
+        mRecyclerView.setAdapter(meteoriteListAdapter);
     }
 //
 //    // TODO: Rename method, update argument and hook method into UI event
