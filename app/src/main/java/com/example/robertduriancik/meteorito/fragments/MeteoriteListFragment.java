@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.MeteoriteListAdapter;
 import com.example.robertduriancik.meteorito.api.NasaDataApi;
+import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
 import java.util.List;
@@ -31,8 +33,8 @@ import retrofit2.Response;
 // * Use the {@link MeteoriteListFragment#newInstance} factory method to
 // * create an instance of this fragment.
 // */
-public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.OnItemClickListener {
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.onMeteoriteListAdapterEvents {
+    //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
 //    private static final String ARG_PARAM2 = "param2";
 //
@@ -70,6 +72,11 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 //        }
 //    }
+    private static final String TAG = "MeteoriteListFragment";
+
+    private List<MeteoriteLanding> mMeteoriteLandingList;
+    private MeteoriteListAdapter mMeteoriteListAdapter;
+    private NasaDataService mNasaDataService;
 
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
@@ -80,6 +87,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
         ButterKnife.bind(this, view);
 
+        mNasaDataService = new NasaDataApi().getService();
         prepareRecyclerView();
 
         return view;
@@ -96,21 +104,55 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         Toast.makeText(getActivity(), meteoriteLanding.toString(), Toast.LENGTH_SHORT).show();
     }
 
-    private void populateRecyclerView(final List<MeteoriteLanding> meteoriteLandingList) {
-        mRecyclerView.setAdapter(new MeteoriteListAdapter(meteoriteLandingList, MeteoriteListFragment.this));
+    @Override
+    public void onLoadMore() {
+        if (mMeteoriteLandingList != null) {
+            mMeteoriteLandingList.add(null);
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mMeteoriteListAdapter.notifyItemInserted(mMeteoriteLandingList.size() - 1);
+                }
+            });
+
+            Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, mMeteoriteLandingList.size() - 1);
+            landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
+                @Override
+                public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
+                    mMeteoriteLandingList.remove(mMeteoriteLandingList.size() - 1);
+                    mMeteoriteListAdapter.notifyItemRemoved(mMeteoriteLandingList.size());
+
+                    List<MeteoriteLanding> list = response.body();
+                    if (list != null) {
+                        mMeteoriteLandingList.addAll(list);
+                        mMeteoriteListAdapter.notifyDataSetChanged();
+                    }
+                    mMeteoriteListAdapter.setLoaded();
+
+                }
+
+                @Override
+                public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
+                    Log.e(TAG, "onFailure: An error was thrown during data fetching", t);
+                }
+            });
+
+        }
     }
 
     private void loadLandings() {
-        Call<List<MeteoriteLanding>> landingCall = new NasaDataApi().getService().getMeteoriteLandings();
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, 0);
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
             public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
-                populateRecyclerView(response.body());
+                mMeteoriteLandingList = response.body();
+                mMeteoriteListAdapter = new MeteoriteListAdapter(mRecyclerView, mMeteoriteLandingList, MeteoriteListFragment.this);
+                mRecyclerView.setAdapter(mMeteoriteListAdapter);
             }
 
             @Override
             public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
-                t.printStackTrace();
+                Log.e(TAG, "onFailure: An error was thrown during data fetching", t);
             }
         });
     }
