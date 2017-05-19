@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.robertduriancik.meteorito.R;
+import com.example.robertduriancik.meteorito.model.MeteoriteLanding;
 
 import java.util.List;
 
@@ -16,14 +17,14 @@ import butterknife.ButterKnife;
 public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdapter.MeteoriteItemHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(String s);
+        void onItemClick(MeteoriteLanding meteoriteLanding);
     }
 
-    private final List<String> mStringList;
+    private final List<MeteoriteLanding> mMeteoriteLandingList;
     private final OnItemClickListener mListener;
 
-    public MeteoriteListAdapter(List<String> stringList, OnItemClickListener listener) {
-        this.mStringList = stringList;
+    public MeteoriteListAdapter(List<MeteoriteLanding> meteoriteLandingList, OnItemClickListener listener) {
+        this.mMeteoriteLandingList = meteoriteLandingList;
         this.mListener = listener;
     }
 
@@ -43,12 +44,12 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
 
     @Override
     public void onBindViewHolder(MeteoriteItemHolder holder, int position) {
-        holder.bind(mStringList.get(position), mListener);
+        holder.bind(mMeteoriteLandingList.get(position), mListener);
     }
 
     @Override
     public int getItemCount() {
-        return mStringList.size();
+        return mMeteoriteLandingList.size();
     }
 
     public static class MeteoriteItemHolder extends RecyclerView.ViewHolder {
@@ -61,8 +62,8 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(final String item, final OnItemClickListener listener) {
-            mTextView.setText(item);
+        void bind(final MeteoriteLanding item, final OnItemClickListener listener) {
+            mTextView.setText(item.getName());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
