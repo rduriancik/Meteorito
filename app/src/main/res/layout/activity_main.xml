@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.robertduriancik.meteorito.MainActivity">
+    tools:context="com.example.robertduriancik.meteorito.activities.MainActivity">
 
     <fragment
         android:id="@+id/fragment"
-        android:name="com.example.robertduriancik.meteorito.MeteoriteListFragment"
+        android:name="com.example.robertduriancik.meteorito.fragments.MeteoriteListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout="@layout/fragment_meteorite_list"/>

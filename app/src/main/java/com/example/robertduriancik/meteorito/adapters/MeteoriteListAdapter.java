@@ -1,10 +1,12 @@
-package com.example.robertduriancik.meteorito;
+package com.example.robertduriancik.meteorito.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.robertduriancik.meteorito.R;
 
 import java.util.List;
 
@@ -54,12 +56,12 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
         @BindView(R.id.textView)
         TextView mTextView;
 
-        public MeteoriteItemHolder(View itemView) {
+        MeteoriteItemHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final String item, final OnItemClickListener listener) {
+        void bind(final String item, final OnItemClickListener listener) {
             mTextView.setText(item);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
