@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 
 public class MeteoriteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public interface onMeteoriteListAdapterEvents {
+    public interface onMeteoriteListAdapterInteraction {
         void onItemClick(MeteoriteLanding meteoriteLanding);
 
         void onLoadMore();
@@ -28,13 +28,13 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final int VIEW_TYPE_LOADING = 1;
 
     private final List<MeteoriteLanding> mMeteoriteLandingList;
-    private final onMeteoriteListAdapterEvents mListener;
+    private final onMeteoriteListAdapterInteraction mListener;
 
     private boolean isLoading;
     private int lastVisibleItem;
     private int totalItemCount;
 
-    public MeteoriteListAdapter(RecyclerView recyclerView, List<MeteoriteLanding> meteoriteLandingList, onMeteoriteListAdapterEvents listener) {
+    public MeteoriteListAdapter(RecyclerView recyclerView, List<MeteoriteLanding> meteoriteLandingList, onMeteoriteListAdapterInteraction listener) {
         this.mMeteoriteLandingList = meteoriteLandingList;
         this.mListener = listener;
 
@@ -105,7 +105,7 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<RecyclerView.View
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(final MeteoriteLanding item, final onMeteoriteListAdapterEvents listener) {
+        void bind(final MeteoriteLanding item, final onMeteoriteListAdapterInteraction listener) {
             mTextView.setText(String.valueOf(item.getMass()));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -123,7 +123,7 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<RecyclerView.View
         @BindView(R.id.progressBar)
         ProgressBar mProgressBar;
 
-        public LoadingViewHolder(View itemView) {
+        LoadingViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

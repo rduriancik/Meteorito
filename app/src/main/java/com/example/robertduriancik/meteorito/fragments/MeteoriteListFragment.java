@@ -16,6 +16,7 @@ import com.example.robertduriancik.meteorito.api.NasaDataApi;
 import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,7 +34,7 @@ import retrofit2.Response;
 // * Use the {@link MeteoriteListFragment#newInstance} factory method to
 // * create an instance of this fragment.
 // */
-public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.onMeteoriteListAdapterEvents {
+public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.onMeteoriteListAdapterInteraction {
     //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
 //    private static final String ARG_PARAM2 = "param2";
@@ -87,6 +88,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
         ButterKnife.bind(this, view);
 
+        mMeteoriteLandingList = new ArrayList<>();
         mNasaDataService = new NasaDataApi().getService();
         prepareRecyclerView();
 
@@ -96,7 +98,28 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private void prepareRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
+        mMeteoriteListAdapter = new MeteoriteListAdapter(mRecyclerView, mMeteoriteLandingList, MeteoriteListFragment.this);
+        mRecyclerView.setAdapter(mMeteoriteListAdapter);
         loadLandings();
+    }
+
+    private void loadLandings() {
+        Call<List<MeteoriteLanding>> call = mNasaDataService.getMeteoriteLandings(50, 0);
+        call.enqueue(new Callback<List<MeteoriteLanding>>() {
+            @Override
+            public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
+                List<MeteoriteLanding> list = response.body();
+                if (list != null) {
+                    mMeteoriteLandingList.addAll(list);
+                    mMeteoriteListAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
+                Log.e(TAG, "onFailure: An error was thrown during data fetching", t);
+            }
+        });
     }
 
     @Override
@@ -115,8 +138,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                 }
             });
 
-            Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, mMeteoriteLandingList.size() - 1);
-            landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
+            Call<List<MeteoriteLanding>> call = mNasaDataService.getMeteoriteLandings(50, mMeteoriteLandingList.size() - 1);
+            call.enqueue(new Callback<List<MeteoriteLanding>>() {
                 @Override
                 public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
                     mMeteoriteLandingList.remove(mMeteoriteLandingList.size() - 1);
@@ -138,23 +161,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             });
 
         }
-    }
-
-    private void loadLandings() {
-        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, 0);
-        landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
-            @Override
-            public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
-                mMeteoriteLandingList = response.body();
-                mMeteoriteListAdapter = new MeteoriteListAdapter(mRecyclerView, mMeteoriteLandingList, MeteoriteListFragment.this);
-                mRecyclerView.setAdapter(mMeteoriteListAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
-                Log.e(TAG, "onFailure: An error was thrown during data fetching", t);
-            }
-        });
     }
 
     //
