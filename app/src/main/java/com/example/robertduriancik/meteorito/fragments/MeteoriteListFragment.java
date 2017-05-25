@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.MeteoriteListAdapter;
 import com.example.robertduriancik.meteorito.api.NasaDataApi;
+import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
 import java.util.List;
@@ -32,7 +33,7 @@ import retrofit2.Response;
 // * create an instance of this fragment.
 // */
 public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.onMeteoriteListAdapterInteraction {
-    //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
 //    private static final String ARG_PARAM2 = "param2";
 //
@@ -71,6 +72,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 //        }
 //    }
 
+    private NasaDataService mNasaDataService;
+
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
 
@@ -79,6 +82,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
         ButterKnife.bind(this, view);
+
+        mNasaDataService = new NasaDataApi().getService();
 
         prepareRecyclerView();
 
@@ -108,13 +113,11 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                 populateRecyclerView(response.body());
             }
 
-                @Override
-                public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
-                    Log.e(TAG, "onFailure: An error was thrown during data fetching", t);
-                }
-            });
-
-        }
+            @Override
+            public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     //
