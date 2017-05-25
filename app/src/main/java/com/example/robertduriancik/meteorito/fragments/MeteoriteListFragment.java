@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.MeteoriteListAdapter;
 import com.example.robertduriancik.meteorito.api.NasaDataApi;
+import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
 import java.util.List;
@@ -71,6 +72,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 //        }
 //    }
 
+    private NasaDataService mNasaDataService;
+
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
 
@@ -80,6 +83,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
         ButterKnife.bind(this, view);
 
+        mNasaDataService = new NasaDataApi().getService();
+
         prepareRecyclerView();
 
         return view;
@@ -88,7 +93,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private void prepareRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
-        loadLandings();
     }
 
     @Override
@@ -101,7 +105,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void loadLandings() {
-        Call<List<MeteoriteLanding>> landingCall = new NasaDataApi().getService().getMeteoriteLandings();
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings();
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
             public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
