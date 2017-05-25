@@ -38,7 +38,7 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
 
     @Override
     public void onBindViewHolder(MeteoriteItemViewHolder holder, int position) {
-            ((MeteoriteItemViewHolder) holder).bind(mMeteoriteLandingList.get(position), mListener);
+        holder.bind(mMeteoriteLandingList.get(position), mListener);
     }
 
     @Override
