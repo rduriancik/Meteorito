@@ -11,11 +11,17 @@ import android.widget.Toast;
 
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.MeteoriteListAdapter;
+import com.example.robertduriancik.meteorito.api.NasaDataApi;
+import com.example.robertduriancik.meteorito.api.NasaDataService;
+import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
-import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 ///**
@@ -26,13 +32,11 @@ import butterknife.ButterKnife;
 // * Use the {@link MeteoriteListFragment#newInstance} factory method to
 // * create an instance of this fragment.
 // */
-public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.OnItemClickListener {
-//    // TODO: Rename parameter arguments, choose names that match
+public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.onMeteoriteListAdapterInteraction {
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
 //    private static final String ARG_PARAM2 = "param2";
 //
-//    // TODO: Rename and change types of parameters
 //    private String mParam1;
 //    private String mParam2;
 //
@@ -50,7 +54,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 //     * @param param2 Parameter 2.
 //     * @return A new instance of fragment MeteoriteListFragment.
 //     */
-//    // TODO: Rename and change types and number of parameters
 //    public static MeteoriteListFragment newInstance(String param1, String param2) {
 //        MeteoriteListFragment fragment = new MeteoriteListFragment();
 //        Bundle args = new Bundle();
@@ -69,6 +72,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 //        }
 //    }
 
+    private NasaDataService mNasaDataService;
+
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
 
@@ -78,6 +83,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
         ButterKnife.bind(this, view);
 
+        mNasaDataService = new NasaDataApi().getService();
+
         prepareRecyclerView();
 
         return view;
@@ -86,18 +93,34 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private void prepareRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
-
-        MeteoriteListAdapter meteoriteListAdapter = new MeteoriteListAdapter(Arrays.asList("TEST", "test", "Test", "TeSt"), this);
-        mRecyclerView.setAdapter(meteoriteListAdapter);
+        loadLandings();
     }
 
     @Override
-    public void onItemClick(String s) {
-        Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+    public void onItemClick(MeteoriteLanding meteoriteLanding) {
+        Toast.makeText(getActivity(), meteoriteLanding.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void populateRecyclerView(final List<MeteoriteLanding> meteoriteLandingList) {
+        mRecyclerView.setAdapter(new MeteoriteListAdapter(meteoriteLandingList, MeteoriteListFragment.this));
+    }
+
+    private void loadLandings() {
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings();
+        landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
+            @Override
+            public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
+                populateRecyclerView(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     //
-//    // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {
 //            mListener.onFragmentInteraction(uri);
@@ -132,7 +155,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 //     * >Communicating with Other Fragments</a> for more information.
 //     */
 //    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
 //        void onFragmentInteraction(Uri uri);
 //    }
 }
