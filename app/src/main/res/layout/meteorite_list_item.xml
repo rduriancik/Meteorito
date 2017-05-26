@@ -24,8 +24,11 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_margin="8dp"
-                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 tools:text="Name"/>
 
             <TextView
@@ -44,7 +47,7 @@
                 android:layout_below="@+id/item_class"
                 android:layout_alignLeft="@+id/item_name"
                 android:layout_alignStart="@+id/item_name"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 tools:text="Mass"/>
 
             <TextView
@@ -54,8 +57,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@+id/item_name"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 tools:text="Year"/>
 
         </RelativeLayout>
