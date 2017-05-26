@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,10 +31,10 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
 
     @Override
     public MeteoriteItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.meteorite_list_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.meteorite_list_item, parent, false);
 
-            return new MeteoriteItemViewHolder(itemView);
+        return new MeteoriteItemViewHolder(itemView);
     }
 
     @Override
@@ -48,8 +49,14 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
 
     public static class MeteoriteItemViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.textView)
-        TextView mTextView;
+        @BindView(R.id.item_name)
+        TextView mName;
+        @BindView(R.id.item_class)
+        TextView mClass;
+        @BindView(R.id.item_mass)
+        TextView mMass;
+        @BindView(R.id.item_year)
+        TextView mYear;
 
         MeteoriteItemViewHolder(View itemView) {
             super(itemView);
@@ -57,7 +64,12 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
         }
 
         void bind(final MeteoriteLanding item, final onMeteoriteListAdapterInteraction listener) {
-            mTextView.setText(String.valueOf(item.getMass()));
+            mName.setText(item.getName());
+            mClass.setText(item.getRecClass());
+            mMass.setText(String.valueOf(item.getMass()));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(item.getDate());
+            mYear.setText(String.valueOf(calendar.get(Calendar.YEAR)));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
