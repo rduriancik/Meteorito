@@ -17,14 +17,14 @@ import butterknife.ButterKnife;
 
 public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdapter.MeteoriteItemViewHolder> {
 
-    public interface onMeteoriteListAdapterInteraction {
+    public interface onMeteoriteListAdapterInteractionListener {
         void onItemClick(MeteoriteLanding meteoriteLanding);
     }
 
     private final List<MeteoriteLanding> mMeteoriteLandingList;
-    private final onMeteoriteListAdapterInteraction mListener;
+    private final onMeteoriteListAdapterInteractionListener mListener;
 
-    public MeteoriteListAdapter(List<MeteoriteLanding> meteoriteLandingList, onMeteoriteListAdapterInteraction listener) {
+    public MeteoriteListAdapter(List<MeteoriteLanding> meteoriteLandingList, onMeteoriteListAdapterInteractionListener listener) {
         this.mMeteoriteLandingList = meteoriteLandingList;
         this.mListener = listener;
     }
@@ -63,7 +63,7 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(final MeteoriteLanding item, final onMeteoriteListAdapterInteraction listener) {
+        void bind(final MeteoriteLanding item, final onMeteoriteListAdapterInteractionListener listener) {
             mName.setText(item.getName());
             mClass.setText(item.getRecClass());
             mMass.setText(String.valueOf(item.getMass()));
