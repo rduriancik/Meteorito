@@ -1,5 +1,8 @@
 package com.example.robertduriancik.meteorito.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -8,7 +11,7 @@ import java.util.Date;
  * Created by robert-ntb on 5/19/17.
  */
 
-public class MeteoriteLanding {
+public class MeteoriteLanding implements Parcelable {
 
     private long id;
     private String fall;
@@ -110,4 +113,50 @@ public class MeteoriteLanding {
                 ", date=" + date +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.fall);
+        dest.writeDouble(this.mass);
+        dest.writeString(this.name);
+        dest.writeString(this.nameType);
+        dest.writeString(this.recClass);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+        dest.writeLong(this.date != null ? this.date.getTime() : -1);
+    }
+
+    public MeteoriteLanding() {
+    }
+
+    protected MeteoriteLanding(Parcel in) {
+        this.id = in.readLong();
+        this.fall = in.readString();
+        this.mass = in.readDouble();
+        this.name = in.readString();
+        this.nameType = in.readString();
+        this.recClass = in.readString();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+    }
+
+    public static final Parcelable.Creator<MeteoriteLanding> CREATOR = new Parcelable.Creator<MeteoriteLanding>() {
+        @Override
+        public MeteoriteLanding createFromParcel(Parcel source) {
+            return new MeteoriteLanding(source);
+        }
+
+        @Override
+        public MeteoriteLanding[] newArray(int size) {
+            return new MeteoriteLanding[size];
+        }
+    };
 }
