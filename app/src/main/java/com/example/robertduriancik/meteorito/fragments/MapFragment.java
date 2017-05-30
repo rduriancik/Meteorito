@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
@@ -132,9 +134,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(mMeteoriteLanding.getLatitude(), mMeteoriteLanding.getLongitude()))
-                .title("Meteorite Landing"));
+        LatLng latLng = new LatLng(mMeteoriteLanding.getLatitude(), mMeteoriteLanding.getLongitude());
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        // TODO implement InfoWindowADapter
+        Marker marker = googleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title("Meteorite Landing")
+                .snippet(mMeteoriteLanding.getName()));
+        marker.showInfoWindow();
     }
 
     //    // TODO: Rename method, update argument and hook method into UI event
