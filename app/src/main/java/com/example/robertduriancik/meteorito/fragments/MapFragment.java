@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.robertduriancik.meteorito.R;
+import com.example.robertduriancik.meteorito.adapters.CustomInfoWindowAdapter;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,16 +20,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-///**
-// * A simple {@link Fragment} subclass.
-// * Activities that contain this fragment must implement the
-// * {@link MapFragment.OnFragmentInteractionListener} interface
-// * to handle interaction events.
-// * Use the {@link MapFragment#newInstance} factory method to
-// * create an instance of this fragment.
-// */
+/**
+ * A simple {@link Fragment} subclass.
+ */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-//    private OnFragmentInteractionListener mListener;
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
@@ -137,50 +132,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         LatLng latLng = new LatLng(mMeteoriteLanding.getLatitude(), mMeteoriteLanding.getLongitude());
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        // TODO implement InfoWindowADapter
+        googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title("Meteorite Landing")
-                .snippet(mMeteoriteLanding.getName()));
+                .title("Meteorite Landing"));
+        marker.setTag(mMeteoriteLanding);
         marker.showInfoWindow();
+//        TODO hide marker on click
     }
 
-    //    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
 }
