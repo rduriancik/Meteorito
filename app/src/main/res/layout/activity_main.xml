@@ -7,11 +7,9 @@
     android:orientation="vertical"
     tools:context="com.example.robertduriancik.meteorito.activities.MainActivity">
 
-    <fragment
-        android:id="@+id/fragment"
-        android:name="com.example.robertduriancik.meteorito.fragments.MeteoriteListFragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_meteorite_list"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>
