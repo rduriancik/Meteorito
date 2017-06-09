@@ -1,6 +1,9 @@
 package com.example.robertduriancik.meteorito.api;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,12 +46,17 @@ public class NasaDataApi {
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
-                        try {
-                            return chain.proceed(chain.request());
-                        } catch (Exception e) {
+                        if (isNetworkAvailable(context)) {
+                            Log.d(TAG, "intercept: online");
+                            Request onlineRequest = chain.request().newBuilder()
+                                    .header("Cache-Control", "public, max-stale=" + 60 * 5)
+                                    .build();
+                            return chain.proceed(onlineRequest);
+                        } else {
+                            Log.d(TAG, "intercept: offline");
                             Request offlineRequest = chain.request().newBuilder()
                                     .header("Cache-Control", "public, only-if-cached," +
-                                            "max-stale=" + 60 * 60 * 24 * 7) // tolerate 1-week stale
+                                            "max-stale=" + 60 * 60 * 24 * 14) // tolerate 2-weeks stale
                                     .build();
                             return chain.proceed(offlineRequest);
                         }
@@ -64,6 +72,15 @@ public class NasaDataApi {
                 .build();
 
         mService = retrofit.create(NasaDataService.class);
+    }
+
+    private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
     }
 
     public NasaDataService getService() {

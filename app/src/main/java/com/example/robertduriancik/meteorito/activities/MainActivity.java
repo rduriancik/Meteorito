@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity
 
         MeteoriteListFragment meteoriteListFragment = new MeteoriteListFragment();
         mFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, meteoriteListFragment)
+                .replace(R.id.fragment_container, meteoriteListFragment)
                 .commit();
     }
 
