@@ -15,6 +15,7 @@ import com.example.robertduriancik.meteorito.api.NasaDataApi;
 import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,9 +32,12 @@ import retrofit2.Response;
  * to handle interaction events.
  */
 public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.onMeteoriteListAdapterInteractionListener {
+    private static final String TAG = "MeteoriteListFragment";
 
     private OnMeteoriteListFragmentInteractionListener mListener;
     private NasaDataService mNasaDataService;
+    private List<MeteoriteLanding> mMeteoriteLandings;
+    private MeteoriteListAdapter mListAdapter;
 
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
@@ -48,7 +52,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
         ButterKnife.bind(this, view);
 
-        mNasaDataService = new NasaDataApi().getService();
+        mNasaDataService = new NasaDataApi(getContext()).getService();
 
         prepareRecyclerView();
 
@@ -58,6 +62,11 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private void prepareRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
+
+        mMeteoriteLandings = new ArrayList<>();
+        mListAdapter = new MeteoriteListAdapter(mMeteoriteLandings, MeteoriteListFragment.this);
+        mRecyclerView.setAdapter(mListAdapter);
+
         loadLandings();
     }
 
@@ -68,16 +77,17 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         }
     }
 
-    private void populateRecyclerView(final List<MeteoriteLanding> meteoriteLandingList) {
-        mRecyclerView.setAdapter(new MeteoriteListAdapter(meteoriteLandingList, MeteoriteListFragment.this));
-    }
-
     private void loadLandings() {
-        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings();
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(20, 0);
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
             public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
-                populateRecyclerView(response.body());
+                List<MeteoriteLanding> list = response.body();
+                if (list != null) {
+                    mMeteoriteLandings.addAll(list);
+                    mListAdapter.notifyDataSetChanged();
+                }
+
             }
 
             @Override
