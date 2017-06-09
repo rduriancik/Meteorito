@@ -3,7 +3,6 @@ package com.example.robertduriancik.meteorito.api;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,8 +26,9 @@ public class NasaDataApi {
     private static final String TAG = "NasaDataApi";
 
     private static final String NASA_DATA_API_ENDPOINT = "https://data.nasa.gov";
-    private final NasaDataService mService;
     private static final int CACHE_SIZE = 10 * 1024 * 1024;
+
+    private final NasaDataService mService;
 
     public NasaDataApi(final Context context) {
         Gson gson = new GsonBuilder()
@@ -47,13 +47,11 @@ public class NasaDataApi {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
                         if (isNetworkAvailable(context)) {
-                            Log.d(TAG, "intercept: online");
                             Request onlineRequest = chain.request().newBuilder()
-                                    .header("Cache-Control", "public, max-stale=" + 60 * 60)
+                                    .header("Cache-Control", "public, max-stale=" + 60 * 60 * 24)
                                     .build();
                             return chain.proceed(onlineRequest);
                         } else {
-                            Log.d(TAG, "intercept: offline");
                             Request offlineRequest = chain.request().newBuilder()
                                     .header("Cache-Control", "public, only-if-cached," +
                                             "max-stale=" + 60 * 60 * 24 * 14) // tolerate 2-weeks stale
