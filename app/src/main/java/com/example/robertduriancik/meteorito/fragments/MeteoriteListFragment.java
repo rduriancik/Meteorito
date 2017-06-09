@@ -2,9 +2,11 @@ package com.example.robertduriancik.meteorito.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.example.robertduriancik.meteorito.api.NasaDataApi;
 import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,9 +34,15 @@ import retrofit2.Response;
  * to handle interaction events.
  */
 public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.onMeteoriteListAdapterInteractionListener {
+    private static final String TAG = "MeteoriteListFragment";
+
+    private static final String LIST_STATE_KEY = "list_state_key";
+    private static final String LIST_CONTENT_KEY = "list_content_key";
 
     private OnMeteoriteListFragmentInteractionListener mListener;
     private NasaDataService mNasaDataService;
+    private ArrayList<MeteoriteLanding> mMeteoriteLandings;
+    private MeteoriteListAdapter mListAdapter;
 
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
@@ -43,22 +52,45 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mMeteoriteLandings = new ArrayList<>();
+        if (savedInstanceState != null) {
+            List<MeteoriteLanding> list = savedInstanceState.getParcelableArrayList(LIST_CONTENT_KEY);
+            if (list != null) {
+                mMeteoriteLandings.addAll(list);
+            }
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
         ButterKnife.bind(this, view);
 
-        mNasaDataService = new NasaDataApi().getService();
+        mNasaDataService = new NasaDataApi(getContext()).getService();
 
-        prepareRecyclerView();
+        prepareRecyclerView(savedInstanceState);
+        if (savedInstanceState == null) {
+            loadLandings();
+        }
 
         return view;
     }
 
-    private void prepareRecyclerView() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    private void prepareRecyclerView(Bundle savedInstanceState) {
+        // TODO refactor
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        if (savedInstanceState != null) {
+            manager.onRestoreInstanceState(savedInstanceState.getParcelable(LIST_STATE_KEY));
+        }
+        mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setHasFixedSize(true);
-        loadLandings();
+
+        mListAdapter = new MeteoriteListAdapter(mMeteoriteLandings, MeteoriteListFragment.this);
+        mRecyclerView.setAdapter(mListAdapter);
     }
 
     @Override
@@ -68,16 +100,18 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         }
     }
 
-    private void populateRecyclerView(final List<MeteoriteLanding> meteoriteLandingList) {
-        mRecyclerView.setAdapter(new MeteoriteListAdapter(meteoriteLandingList, MeteoriteListFragment.this));
-    }
-
     private void loadLandings() {
-        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings();
+        Log.d(TAG, "loadLandings: called");
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(20, 0);
+
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
             public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
-                populateRecyclerView(response.body());
+                List<MeteoriteLanding> list = response.body();
+                if (list != null) {
+                    mMeteoriteLandings.addAll(list);
+                    mListAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -85,6 +119,14 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                 t.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(LIST_STATE_KEY, mRecyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putParcelableArrayList(LIST_CONTENT_KEY, mMeteoriteLandings);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
