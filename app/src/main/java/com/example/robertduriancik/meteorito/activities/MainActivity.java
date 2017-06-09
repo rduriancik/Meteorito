@@ -22,9 +22,14 @@ public class MainActivity extends AppCompatActivity
 
         mFragmentManager = getSupportFragmentManager();
 
+        // Protection against fragment overlapping
+        if (savedInstanceState != null) {
+            return;
+        }
+
         MeteoriteListFragment meteoriteListFragment = new MeteoriteListFragment();
         mFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, meteoriteListFragment)
+                .add(R.id.fragment_container, meteoriteListFragment)
                 .commit();
     }
 

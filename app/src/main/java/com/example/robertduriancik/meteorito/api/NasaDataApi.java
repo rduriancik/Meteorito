@@ -49,7 +49,7 @@ public class NasaDataApi {
                         if (isNetworkAvailable(context)) {
                             Log.d(TAG, "intercept: online");
                             Request onlineRequest = chain.request().newBuilder()
-                                    .header("Cache-Control", "public, max-stale=" + 60 * 5)
+                                    .header("Cache-Control", "public, max-stale=" + 60 * 60)
                                     .build();
                             return chain.proceed(onlineRequest);
                         } else {
