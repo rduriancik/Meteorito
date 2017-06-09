@@ -10,15 +10,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.MeteoriteListAdapter;
 import com.example.robertduriancik.meteorito.api.NasaDataApi;
 import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
+import com.example.robertduriancik.meteorito.models.MeteoriteLandingsCount;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +41,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
     private static final String LIST_STATE_KEY = "list_state_key";
     private static final String LIST_CONTENT_KEY = "list_content_key";
+    private static final String LANDINGS_COUNT_KEY = "landings_count_key";
 
     private OnMeteoriteListFragmentInteractionListener mListener;
     private NasaDataService mNasaDataService;
@@ -46,6 +50,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
+    @BindView(R.id.meteorite_landings_count)
+    TextView mLandingsCount;
 
     public MeteoriteListFragment() {
         // Required empty public constructor
@@ -71,22 +77,26 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         ButterKnife.bind(this, view);
 
         mNasaDataService = new NasaDataApi(getContext()).getService();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        prepareRecyclerView(savedInstanceState);
+        if (savedInstanceState != null) {
+            layoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LIST_STATE_KEY));
+            mLandingsCount.setText(String.format(Locale.getDefault(), "%d", savedInstanceState.getInt(LANDINGS_COUNT_KEY)));
+        }
+
+        prepareRecyclerView(layoutManager);
+
         if (savedInstanceState == null) {
             loadLandings();
+            loadLandingsCount();
         }
 
         return view;
     }
 
-    private void prepareRecyclerView(Bundle savedInstanceState) {
+    private void prepareRecyclerView(RecyclerView.LayoutManager layoutManager) {
         // TODO refactor
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        if (savedInstanceState != null) {
-            manager.onRestoreInstanceState(savedInstanceState.getParcelable(LIST_STATE_KEY));
-        }
-        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
         mListAdapter = new MeteoriteListAdapter(mMeteoriteLandings, MeteoriteListFragment.this);
@@ -116,7 +126,26 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
             @Override
             public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
-                t.printStackTrace();
+                Log.e(TAG, "onFailure: loadLandings ", t);
+            }
+        });
+    }
+
+    private void loadLandingsCount() {
+        Call<List<MeteoriteLandingsCount>> countCall = mNasaDataService.getMeteoriteLandingsCount();
+
+        countCall.enqueue(new Callback<List<MeteoriteLandingsCount>>() {
+            @Override
+            public void onResponse(Call<List<MeteoriteLandingsCount>> call, Response<List<MeteoriteLandingsCount>> response) {
+                List<MeteoriteLandingsCount> list = response.body();
+                if (list != null) {
+                    mLandingsCount.setText(String.format(Locale.getDefault(), "%d", list.get(0).getCount()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MeteoriteLandingsCount>> call, Throwable t) {
+                Log.e(TAG, "onFailure: loadLandingsCount ", t);
             }
         });
     }
@@ -125,6 +154,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(LIST_STATE_KEY, mRecyclerView.getLayoutManager().onSaveInstanceState());
         outState.putParcelableArrayList(LIST_CONTENT_KEY, mMeteoriteLandings);
+        outState.putInt(LANDINGS_COUNT_KEY, Integer.parseInt(mLandingsCount.getText().toString()));
 
         super.onSaveInstanceState(outState);
     }
