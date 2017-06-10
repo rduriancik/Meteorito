@@ -31,42 +31,10 @@ public class NasaDataApi {
     private final NasaDataService mService;
 
     public NasaDataApi(final Context context) {
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
-                .create();
-
-//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//        // set your desired log level
-//        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
-
-        Cache cache = new Cache(new File(context.getCacheDir(), "MeteoritoCache"), CACHE_SIZE);
-
-        OkHttpClient httpClient = new OkHttpClient.Builder()
-                .cache(cache)
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        if (isNetworkAvailable(context)) {
-                            Request onlineRequest = chain.request().newBuilder()
-                                    .header("Cache-Control", "public, max-stale=" + 60 * 60 * 24)
-                                    .build();
-                            return chain.proceed(onlineRequest);
-                        } else {
-                            Request offlineRequest = chain.request().newBuilder()
-                                    .header("Cache-Control", "public, only-if-cached," +
-                                            "max-stale=" + 60 * 60 * 24 * 14) // tolerate 2-weeks stale
-                                    .build();
-                            return chain.proceed(offlineRequest);
-                        }
-                    }
-                })
-//                .addInterceptor(logging)
-                .build();
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NASA_DATA_API_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(httpClient)
+                .addConverterFactory(createGsonConvertFactory())
+                .client(createHttpClient(context))
                 .build();
 
         mService = retrofit.create(NasaDataService.class);
@@ -79,6 +47,51 @@ public class NasaDataApi {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
+    }
+
+    private GsonConverterFactory createGsonConvertFactory() {
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+                .create();
+
+        return GsonConverterFactory.create(gson);
+    }
+
+    private OkHttpClient createHttpClient(final Context context) {
+        Cache cache = new Cache(new File(context.getCacheDir(), "MeteoritoCache"), CACHE_SIZE);
+
+//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+//        // set your desired log level
+//        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .cache(cache)
+                .addNetworkInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request onlineRequest = chain.request().newBuilder()
+                                .header("Cache-Control", "public, max-age=" + 60 * 60 * 24)
+                                .build();
+                        return chain.proceed(onlineRequest);
+                    }
+                })
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request();
+                        if (!isNetworkAvailable(context)) {
+                            request = request.newBuilder()
+                                    .header("Cache-Control", "public, only-if-cached," +
+                                            "max-stale=" + 60 * 60 * 24 * 14) // tolerate 2-weeks stale
+                                    .build();
+                        }
+                        return chain.proceed(request);
+                    }
+                })
+//                .addInterceptor(logging)
+                ;
+
+        return httpClientBuilder.build();
     }
 
     public NasaDataService getService() {

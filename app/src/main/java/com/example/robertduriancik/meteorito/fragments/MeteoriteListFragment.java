@@ -94,7 +94,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void prepareRecyclerView(RecyclerView.LayoutManager layoutManager) {
-        // TODO refactor
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
@@ -139,6 +138,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                 List<MeteoriteLandingsCount> list = response.body();
                 if (list != null) {
                     mLandingsCountValue = list.get(0).getCount();
+
                     ValueAnimator animator = ValueAnimator.ofInt(0, mLandingsCountValue);
                     animator.setDuration(1500);
                     animator.start();
@@ -148,7 +148,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                             mLandingsCount.setText(String.valueOf(animation.getAnimatedValue()));
                         }
                     });
-
                 }
             }
 
