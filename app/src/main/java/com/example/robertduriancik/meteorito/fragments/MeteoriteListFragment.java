@@ -61,14 +61,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mMeteoriteLandings = new ArrayList<>();
-        if (savedInstanceState != null) {
-            List<MeteoriteLanding> list = savedInstanceState.getParcelableArrayList(LIST_CONTENT_KEY);
-            if (list != null) {
-                mMeteoriteLandings.addAll(list);
-            }
-        }
     }
 
     @Override
@@ -83,6 +76,10 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         if (savedInstanceState != null) {
             layoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LIST_STATE_KEY));
             mLandingsCount.setText(String.format(Locale.getDefault(), "%d", savedInstanceState.getInt(LANDINGS_COUNT_KEY)));
+            List<MeteoriteLanding> list = savedInstanceState.getParcelableArrayList(LIST_CONTENT_KEY);
+            if (list != null) {
+                mMeteoriteLandings.addAll(list);
+            }
         }
 
         prepareRecyclerView(layoutManager);
@@ -112,7 +109,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void loadLandings() {
-        Log.d(TAG, "loadLandings: called");
         Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(20, 0);
 
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {

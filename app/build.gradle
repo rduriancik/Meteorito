@@ -43,5 +43,5 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
     // Google Maps
-    compile 'com.google.android.gms:play-services-maps:10.2.6'
+    compile 'com.google.android.gms:play-services-maps:11.0.0'
 }
