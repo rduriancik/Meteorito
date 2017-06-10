@@ -57,8 +57,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (getArguments() != null) {
             mMeteoriteLanding = getArguments().getParcelable(MeteoriteLanding.class.getSimpleName());
         } else {
-            // TODO message
-            throw new IllegalStateException("");
+            throw new IllegalStateException("This fragment must be create using the newInstance(MeteoriteLanding meteoriteLanding) method.");
         }
     }
 

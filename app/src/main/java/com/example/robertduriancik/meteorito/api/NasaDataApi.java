@@ -70,7 +70,7 @@ public class NasaDataApi {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
                         Request onlineRequest = chain.request().newBuilder()
-                                .header("Cache-Control", "public, max-age=" + 60 * 60 * 24)
+                                .header("Cache-Control", "public, max-age=" + 60 * 60 * 24) // 1 day
                                 .build();
                         return chain.proceed(onlineRequest);
                     }
