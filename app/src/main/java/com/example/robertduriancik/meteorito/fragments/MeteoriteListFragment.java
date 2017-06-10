@@ -22,7 +22,6 @@ import com.example.robertduriancik.meteorito.models.MeteoriteLandingsCount;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +36,7 @@ import retrofit2.Response;
  * {@link MeteoriteListFragment.OnMeteoriteListFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.onMeteoriteListAdapterInteractionListener {
+public class MeteoriteListFragment extends Fragment implements MeteoriteListAdapter.OnMeteoriteListAdapterInteractionListener {
     private static final String TAG = "MeteoriteListFragment";
 
     private static final String LIST_STATE_KEY = "list_state_key";
@@ -48,6 +47,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private NasaDataService mNasaDataService;
     private ArrayList<MeteoriteLanding> mMeteoriteLandings;
     private MeteoriteListAdapter mListAdapter;
+    private int mLandingsCountValue;
 
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
@@ -75,7 +75,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
         if (savedInstanceState != null) {
             layoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(LIST_STATE_KEY));
-            mLandingsCount.setText(String.format(Locale.getDefault(), "%d", savedInstanceState.getInt(LANDINGS_COUNT_KEY)));
+            mLandingsCountValue = savedInstanceState.getInt(LANDINGS_COUNT_KEY);
             List<MeteoriteLanding> list = savedInstanceState.getParcelableArrayList(LIST_CONTENT_KEY);
             if (list != null) {
                 mMeteoriteLandings.addAll(list);
@@ -83,8 +83,9 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         }
 
         prepareRecyclerView(layoutManager);
+        mLandingsCount.setText(String.valueOf(mLandingsCountValue));
 
-        if (savedInstanceState == null) {
+        if (mMeteoriteLandings.isEmpty()) {
             loadLandings();
             loadLandingsCount();
         }
@@ -97,7 +98,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mListAdapter = new MeteoriteListAdapter(mMeteoriteLandings, MeteoriteListFragment.this);
+        mListAdapter = new MeteoriteListAdapter(mMeteoriteLandings);
+        mListAdapter.addOnMeteoriteListAdapterInteractionListener(this);
         mRecyclerView.setAdapter(mListAdapter);
     }
 
@@ -136,7 +138,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             public void onResponse(Call<List<MeteoriteLandingsCount>> call, Response<List<MeteoriteLandingsCount>> response) {
                 List<MeteoriteLandingsCount> list = response.body();
                 if (list != null) {
-                    ValueAnimator animator = ValueAnimator.ofInt(0, list.get(0).getCount());
+                    mLandingsCountValue = list.get(0).getCount();
+                    ValueAnimator animator = ValueAnimator.ofInt(0, mLandingsCountValue);
                     animator.setDuration(1500);
                     animator.start();
                     animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
