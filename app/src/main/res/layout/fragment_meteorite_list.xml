@@ -2,9 +2,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               tools:context="com.example.robertduriancik.meteorito.fragments.MeteoriteListFragment">
-    <!--tools:showIn="@layout/activity_main">-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/meteorite_list"
@@ -13,15 +13,24 @@
         android:layout_weight="1"
         android:scrollbars="vertical"/>
 
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="16dp">
+
     <TextView
         android:id="@+id/meteorite_landings_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="@android:color/white"
         android:padding="8dp"
+        android:text="0"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold"
-        tools:text="0"/>
+        tools:ignore="HardcodedText"/>
+
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>
