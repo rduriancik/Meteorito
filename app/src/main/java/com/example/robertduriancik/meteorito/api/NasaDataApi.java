@@ -33,7 +33,7 @@ public class NasaDataApi {
     public NasaDataApi(final Context context) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NASA_DATA_API_ENDPOINT)
-                .addConverterFactory(createGsonConvertFactory())
+                .addConverterFactory(createGsonConverterFactory())
                 .client(createHttpClient(context))
                 .build();
 
@@ -49,7 +49,7 @@ public class NasaDataApi {
 
     }
 
-    private GsonConverterFactory createGsonConvertFactory() {
+    private GsonConverterFactory createGsonConverterFactory() {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
                 .create();

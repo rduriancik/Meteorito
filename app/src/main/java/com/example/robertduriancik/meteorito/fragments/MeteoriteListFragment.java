@@ -30,7 +30,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -153,7 +152,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<MeteoriteLandingsCount>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<MeteoriteLandingsCount>> call, @NonNull Throwable t) {
                 Log.e(TAG, "onFailure: loadLandingsCount ", t);
             }
         });
