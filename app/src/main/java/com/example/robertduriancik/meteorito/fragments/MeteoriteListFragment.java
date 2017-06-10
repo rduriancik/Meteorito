@@ -3,6 +3,7 @@ package com.example.robertduriancik.meteorito.fragments;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -114,7 +115,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
-            public void onResponse(Call<List<MeteoriteLanding>> call, Response<List<MeteoriteLanding>> response) {
+            public void onResponse(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Response<List<MeteoriteLanding>> response) {
                 List<MeteoriteLanding> list = response.body();
                 if (list != null) {
                     mMeteoriteLandings.addAll(list);
@@ -123,7 +124,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             }
 
             @Override
-            public void onFailure(Call<List<MeteoriteLanding>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<MeteoriteLanding>> call, Throwable t) {
                 Log.e(TAG, "onFailure: loadLandings ", t);
             }
         });
@@ -134,7 +135,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
         countCall.enqueue(new Callback<List<MeteoriteLandingsCount>>() {
             @Override
-            public void onResponse(Call<List<MeteoriteLandingsCount>> call, Response<List<MeteoriteLandingsCount>> response) {
+            public void onResponse(@NonNull Call<List<MeteoriteLandingsCount>> call, @NonNull Response<List<MeteoriteLandingsCount>> response) {
                 List<MeteoriteLandingsCount> list = response.body();
                 if (list != null) {
                     mLandingsCountValue = list.get(0).getCount();
@@ -152,7 +153,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             }
 
             @Override
-            public void onFailure(Call<List<MeteoriteLandingsCount>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<MeteoriteLandingsCount>> call, Throwable t) {
                 Log.e(TAG, "onFailure: loadLandingsCount ", t);
             }
         });
