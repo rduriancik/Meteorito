@@ -1,5 +1,6 @@
 package com.example.robertduriancik.meteorito.fragments;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -135,7 +136,16 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             public void onResponse(Call<List<MeteoriteLandingsCount>> call, Response<List<MeteoriteLandingsCount>> response) {
                 List<MeteoriteLandingsCount> list = response.body();
                 if (list != null) {
-                    mLandingsCount.setText(String.format(Locale.getDefault(), "%d", list.get(0).getCount()));
+                    ValueAnimator animator = ValueAnimator.ofInt(0, list.get(0).getCount());
+                    animator.setDuration(1500);
+                    animator.start();
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            mLandingsCount.setText(String.valueOf(animation.getAnimatedValue()));
+                        }
+                    });
+
                 }
             }
 
