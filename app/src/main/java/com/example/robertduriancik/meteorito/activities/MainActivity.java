@@ -12,6 +12,7 @@ import com.example.robertduriancik.meteorito.fragments.MeteoriteListFragment;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements MeteoriteListFragment.OnMeteoriteListFragmentInteractionListener {
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         mFragmentManager = getSupportFragmentManager();
 
@@ -48,7 +50,6 @@ public class MainActivity extends AppCompatActivity
 
         if (mFragmentContainerLarge == null) {
             transaction.replace(R.id.fragment_container, mapFragment);
-
         } else {
             transaction.replace(R.id.fragment_container_large, mapFragment);
         }
