@@ -15,7 +15,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -61,9 +60,9 @@ public class NasaDataApi {
     private OkHttpClient createHttpClient(final Context context) {
         Cache cache = new Cache(new File(context.getCacheDir(), "MeteoritoCache"), CACHE_SIZE);
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        // set your desired log level
-        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+//        // set your desired log level
+//        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .cache(cache)
@@ -100,7 +99,7 @@ public class NasaDataApi {
                         return chain.proceed(request);
                     }
                 })
-                .addInterceptor(logging)
+//                .addInterceptor(logging)
                 ;
 
         return httpClientBuilder.build();
