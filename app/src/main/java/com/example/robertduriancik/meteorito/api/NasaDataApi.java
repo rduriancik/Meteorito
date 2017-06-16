@@ -15,6 +15,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -60,19 +61,29 @@ public class NasaDataApi {
     private OkHttpClient createHttpClient(final Context context) {
         Cache cache = new Cache(new File(context.getCacheDir(), "MeteoritoCache"), CACHE_SIZE);
 
-//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//        // set your desired log level
-//        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        // set your desired log level
+        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .cache(cache)
                 .addNetworkInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
-                        Request onlineRequest = chain.request().newBuilder()
-                                .header("Cache-Control", "public, max-age=" + 60 * 60 * 24) // 1 day
-                                .build();
-                        return chain.proceed(onlineRequest);
+                        Response origResponse = chain.proceed(chain.request());
+                        String cacheControl = origResponse.header("Cache-Control");
+                        if (cacheControl == null ||
+                                cacheControl.contains("no-store") ||
+                                cacheControl.contains("no-cache") ||
+                                cacheControl.contains("must-revalidate") ||
+                                cacheControl.contains("max-age=0")) {
+                            return origResponse.newBuilder()
+                                    .removeHeader("Pragma")
+                                    .header("Cache-Control", "public, max-age=" + (60 * 60 * 24))
+                                    .build();
+                        } else {
+                            return origResponse;
+                        }
                     }
                 })
                 .addInterceptor(new Interceptor() {
@@ -81,14 +92,15 @@ public class NasaDataApi {
                         Request request = chain.request();
                         if (!isNetworkAvailable(context)) {
                             request = request.newBuilder()
-                                    .header("Cache-Control", "public, only-if-cached," +
-                                            "max-stale=" + 60 * 60 * 24 * 14) // tolerate 2-weeks stale
+                                    .removeHeader("Pragma")
+                                    .header("Cache-Control", "public, only-if-cached"/*," +
+                                            "max-stale=" + (60 * 60 * 24 * 14)*/) // tolerate 2-weeks stale
                                     .build();
                         }
                         return chain.proceed(request);
                     }
                 })
-//                .addInterceptor(logging)
+                .addInterceptor(logging)
                 ;
 
         return httpClientBuilder.build();
