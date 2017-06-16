@@ -93,8 +93,8 @@ public class NasaDataApi {
                         if (!isNetworkAvailable(context)) {
                             request = request.newBuilder()
                                     .removeHeader("Pragma")
-                                    .header("Cache-Control", "public, only-if-cached"/*," +
-                                            "max-stale=" + (60 * 60 * 24 * 14)*/) // tolerate 2-weeks stale
+                                    .header("Cache-Control", "public, only-if-cached," +
+                                            "max-stale=" + (60 * 60 * 24 * 14)) // tolerate 2-weeks stale
                                     .build();
                         }
                         return chain.proceed(request);
