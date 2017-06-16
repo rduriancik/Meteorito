@@ -69,10 +69,20 @@ public class NasaDataApi {
                 .addNetworkInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
-                        Request onlineRequest = chain.request().newBuilder()
-                                .header("Cache-Control", "public, max-age=" + 60 * 60 * 24) // 1 day
-                                .build();
-                        return chain.proceed(onlineRequest);
+                        Response origResponse = chain.proceed(chain.request());
+                        String cacheControl = origResponse.header("Cache-Control");
+                        if (cacheControl == null ||
+                                cacheControl.contains("no-store") ||
+                                cacheControl.contains("no-cache") ||
+                                cacheControl.contains("must-revalidate") ||
+                                cacheControl.contains("max-age=0")) {
+                            return origResponse.newBuilder()
+                                    .removeHeader("Pragma")
+                                    .header("Cache-Control", "public, max-age=" + (60 * 60 * 24))
+                                    .build();
+                        } else {
+                            return origResponse;
+                        }
                     }
                 })
                 .addInterceptor(new Interceptor() {
@@ -81,8 +91,9 @@ public class NasaDataApi {
                         Request request = chain.request();
                         if (!isNetworkAvailable(context)) {
                             request = request.newBuilder()
+                                    .removeHeader("Pragma")
                                     .header("Cache-Control", "public, only-if-cached," +
-                                            "max-stale=" + 60 * 60 * 24 * 14) // tolerate 2-weeks stale
+                                            "max-stale=" + (60 * 60 * 24 * 14)) // tolerate 2-weeks stale
                                     .build();
                         }
                         return chain.proceed(request);
