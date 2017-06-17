@@ -1,6 +1,7 @@
 package com.example.robertduriancik.meteorito.activities;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity
 
     private FragmentManager mFragmentManager;
 
+    @Nullable
     @BindView(R.id.fragment_container_large)
     FrameLayout mFragmentContainerLarge;
 

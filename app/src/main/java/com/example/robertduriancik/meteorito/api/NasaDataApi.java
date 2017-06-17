@@ -26,7 +26,7 @@ public class NasaDataApi {
     private static final String TAG = "NasaDataApi";
 
     private static final String NASA_DATA_API_ENDPOINT = "https://data.nasa.gov";
-    private static final int CACHE_SIZE = 10 * 1024 * 1024;
+    private static final int CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
 
     private final NasaDataService mService;
 
