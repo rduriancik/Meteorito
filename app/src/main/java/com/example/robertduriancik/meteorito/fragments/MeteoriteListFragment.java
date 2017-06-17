@@ -99,6 +99,15 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
         mListAdapter = new MeteoriteListAdapter(mMeteoriteLandings);
         mListAdapter.addOnMeteoriteListAdapterInteractionListener(this);
+        mListAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                MeteoriteLanding landing = mListAdapter.getItem(0);
+                if (mListener != null && landing != null) {
+                    mListener.onDataLoaded(landing);
+                }
+            }
+        });
         mRecyclerView.setAdapter(mListAdapter);
     }
 
@@ -110,7 +119,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void loadLandings() {
-        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(20, 0);
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings();
 
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
@@ -123,7 +132,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<MeteoriteLanding>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Throwable t) {
                 Log.e(TAG, "onFailure: loadLandings ", t);
             }
         });
@@ -196,5 +205,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
      */
     public interface OnMeteoriteListFragmentInteractionListener {
         void onMeteoriteListItemClick(MeteoriteLanding meteoriteLanding);
+
+        void onDataLoaded(MeteoriteLanding meteoriteLanding);
     }
 }
