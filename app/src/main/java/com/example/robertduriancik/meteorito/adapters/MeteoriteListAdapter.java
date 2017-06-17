@@ -60,7 +60,7 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
         return null;
     }
 
-    public static class MeteoriteItemViewHolder extends RecyclerView.ViewHolder {
+    static class MeteoriteItemViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_name)
         TextView mName;
