@@ -54,7 +54,19 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container_large, mapFragment);
         }
 
-        transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onDataLoaded(MeteoriteLanding meteoriteLanding) {
+        if (mFragmentContainerLarge != null) {
+            MapFragment mapFragment = MapFragment.newInstance(meteoriteLanding);
+
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_large, mapFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

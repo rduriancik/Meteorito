@@ -50,6 +50,16 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
         this.mListener = listener;
     }
 
+    public MeteoriteLanding getItem(int position) {
+        if (mMeteoriteLandingList != null &&
+                position >= 0 &&
+                position < mMeteoriteLandingList.size()) {
+            return mMeteoriteLandingList.get(position);
+        }
+
+        return null;
+    }
+
     public static class MeteoriteItemViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_name)
