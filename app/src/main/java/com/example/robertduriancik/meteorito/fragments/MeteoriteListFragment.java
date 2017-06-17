@@ -119,7 +119,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void loadLandings() {
-        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(20, 0);
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings();
 
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
