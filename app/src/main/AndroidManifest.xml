@@ -28,7 +28,7 @@
         </activity>
 
         <service
-            android:name=".FetchAddressIntentService"
+            android:name=".services.FetchAddressIntentService"
             android:exported="false">
         </service>
     </application>
