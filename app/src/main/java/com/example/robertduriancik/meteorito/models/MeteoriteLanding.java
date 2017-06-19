@@ -25,7 +25,7 @@ public class MeteoriteLanding implements Parcelable {
     @SerializedName("reclong")
     private double longitude;
     @SerializedName("year")
-    private Date date;
+    private Date year;
 
     public long getId() {
         return id;
@@ -91,12 +91,12 @@ public class MeteoriteLanding implements Parcelable {
         this.longitude = longitude;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getYear() {
+        return year;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setYear(Date year) {
+        this.year = year;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class MeteoriteLanding implements Parcelable {
                 ", recClass='" + recClass + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", date=" + date +
+                ", year=" + year +
                 '}';
     }
 
@@ -129,7 +129,7 @@ public class MeteoriteLanding implements Parcelable {
         dest.writeString(this.recClass);
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
-        dest.writeLong(this.date != null ? this.date.getTime() : -1);
+        dest.writeLong(this.year != null ? this.year.getTime() : -1);
     }
 
     public MeteoriteLanding() {
@@ -145,7 +145,7 @@ public class MeteoriteLanding implements Parcelable {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
         long tmpDate = in.readLong();
-        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.year = tmpDate == -1 ? null : new Date(tmpDate);
     }
 
     public static final Parcelable.Creator<MeteoriteLanding> CREATOR = new Parcelable.Creator<MeteoriteLanding>() {

@@ -81,7 +81,7 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
             mClass.setText(item.getRecClass());
             mMass.setText(String.valueOf(item.getMass()));
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(item.getDate());
+            calendar.setTime(item.getYear());
             mYear.setText(String.valueOf(calendar.get(Calendar.YEAR)));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

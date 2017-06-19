@@ -9,6 +9,8 @@ import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+//import com.example.robertduriancik.meteorito.AddressResultReceiver;
+
 /**
  * Created by robert on 3.6.2017.
  */
@@ -37,28 +39,17 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         TextView meteorAddress = (TextView) view.findViewById(R.id.iw_meteorite_address);
 
         MeteoriteLanding meteoriteLanding = (MeteoriteLanding) marker.getTag();
-//        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
-//        Log.d(TAG, "getInfoContents: geocoder " + geocoder.isPresent());
-//        List<Address> addresses = null;
-//        try {
-//            addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
-//        } catch (IOException ex) {
-//            Log.e(TAG, "getInfoContents: ", ex);
-//        }
-
-        // TODO get country name from coordinates
-        // TODO design layout
-
         if (meteoriteLanding != null) {
+            // TODO design layout
+
             title.setText(marker.getTitle());
             meteorName.setText(meteoriteLanding.getName());
             meteorClass.setText(meteoriteLanding.getRecClass());
-
         } else {
             title.setText("No item");
         }
 
-
         return view;
     }
+
 }
