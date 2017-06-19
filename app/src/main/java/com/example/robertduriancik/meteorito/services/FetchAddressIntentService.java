@@ -1,4 +1,4 @@
-package com.example.robertduriancik.meteorito;
+package com.example.robertduriancik.meteorito.services;
 
 import android.app.IntentService;
 import android.content.Intent;
