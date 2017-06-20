@@ -14,8 +14,6 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-//import com.example.robertduriancik.meteorito.AddressResultReceiver;
-
 /**
  * Created by robert on 3.6.2017.
  */
