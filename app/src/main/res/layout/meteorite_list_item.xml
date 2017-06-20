@@ -38,7 +38,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:background="#f6f6f6" />
+                android:background="@color/dividerColor" />
 
             <TextView
                 android:id="@+id/class_label"
