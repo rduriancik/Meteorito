@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Meteorito</string>
     <string name="google_maps_api_key">AIzaSyDJoWr3OZN_e3UuZZn2Xo1oDPDhoAA76fk</string>
+    <string name="iw_title">Meteorite Landing</string>
 </resources>
