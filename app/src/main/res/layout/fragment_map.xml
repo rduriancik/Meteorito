@@ -44,6 +44,7 @@
                 android:textColor="@android:color/black" />
 
             <ProgressBar
+                android:id="@+id/location_progressBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/location_title"
@@ -72,12 +73,17 @@
 
             <TextView
                 android:id="@+id/location_country"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/location_country_label"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_toEndOf="@+id/location_country_label"
+                android:layout_toLeftOf="@+id/location_region_label"
                 android:layout_toRightOf="@+id/location_country_label"
-                tools:text="Country" />
+                android:layout_toStartOf="@+id/location_region_label"
+                android:text="@string/location_unknown"
+                android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/location_region_label"
@@ -97,7 +103,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/location_coordinates"
-                tools:text="region" />
+                android:text="@string/location_unknown"
+                android:textStyle="italic" />
 
         </RelativeLayout>
 

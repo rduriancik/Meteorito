@@ -9,10 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.robertduriancik.meteorito.R;
@@ -48,10 +48,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @BindView(R.id.mapView)
     MapView mMapView;
-    @BindView(R.id.location_country)
-    TextView mTxtCountry;
+
     @BindView(R.id.location_coordinates)
     TextView mCoordinates;
+    @BindView(R.id.location_country)
+    TextView mCountry;
+    @BindView(R.id.location_region)
+    TextView mRegion;
+    @BindView(R.id.location_progressBar)
+    ProgressBar mProgressBar;
 
     public MapFragment() {
         // Required empty public constructor
@@ -101,15 +106,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         mCoordinates.setText(formatLatLng(mMeteoriteLanding.getLatitude(), mMeteoriteLanding.getLongitude()));
         if (mMeteoriteAddress != null) {
-            // TODO set address fields
-            mTxtCountry.setText(mMeteoriteAddress.getCountryName());
+            setAddressFields();
         } else {
             fetchAddress(mMeteoriteLanding);
+            showLoading();
         }
 
         mMapView.onCreate(mapViewBundle);
         mMapView.getMapAsync(this);
         return view;
+    }
+
+    private void setAddressFields() {
+        if (mMeteoriteAddress != null) {
+            mCountry.setText(mMeteoriteAddress.getCountryName());
+            mRegion.setText(mMeteoriteAddress.getAdminArea());
+        }
+    }
+
+    private void showLoading() {
+        mCoordinates.setVisibility(View.GONE);
+        mCountry.setVisibility(View.GONE);
+        mRegion.setVisibility(View.GONE);
+
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void showFields(boolean showAddressFields) {
+        mProgressBar.setVisibility(View.GONE);
+
+        mCoordinates.setVisibility(View.VISIBLE);
+        if (showAddressFields) {
+            mCountry.setVisibility(View.VISIBLE);
+            mRegion.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -225,11 +255,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mTxtCountry.setText(mMeteoriteAddress.getCountryName());
+                        setAddressFields();
+                        showFields(true);
                     }
                 });
             } else {
-                Log.d(TAG, "onReceiveResult: failed");
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showFields(false);
+                    }
+                });
             }
         }
     }

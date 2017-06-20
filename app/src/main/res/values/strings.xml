@@ -5,4 +5,5 @@
     <string name="location_title">Location</string>
     <string name="location_country">Country:</string>
     <string name="location_region">Region:</string>
+    <string name="location_unknown">unknown</string>
 </resources>
