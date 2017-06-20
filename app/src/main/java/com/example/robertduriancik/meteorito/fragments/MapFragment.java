@@ -132,14 +132,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void showFields(boolean showAddressFields) {
+    private void showFields() {
         mProgressBar.setVisibility(View.GONE);
 
         mCoordinates.setVisibility(View.VISIBLE);
-        if (showAddressFields) {
-            mCountry.setVisibility(View.VISIBLE);
-            mRegion.setVisibility(View.VISIBLE);
-        }
+        mCountry.setVisibility(View.VISIBLE);
+        mRegion.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -252,21 +250,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             if (resultCode == FetchAddressIntentService.Constants.SUCCESS_RESULT) {
                 mMeteoriteAddress = resultData.getParcelable(FetchAddressIntentService.Constants.RESULT_ADDRESS_KEY);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setAddressFields();
-                        showFields(true);
-                    }
-                });
-            } else {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showFields(false);
-                    }
-                });
             }
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showFields();
+                }
+            });
         }
     }
 
