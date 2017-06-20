@@ -23,12 +23,12 @@
                 android:text="Location" />
 
             <TextView
-                android:id="@+id/coordinates"
+                android:id="@+id/location_coordinates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/country"
+                android:id="@+id/location_country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Country" />

@@ -48,9 +48,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @BindView(R.id.mapView)
     MapView mMapView;
-    @BindView(R.id.country)
+    @BindView(R.id.location_country)
     TextView mTxtCountry;
-    @BindView(R.id.coordinates)
+    @BindView(R.id.location_coordinates)
     TextView mCoordinates;
 
     public MapFragment() {
