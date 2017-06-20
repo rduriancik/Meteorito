@@ -58,7 +58,7 @@
                 android:layout_below="@+id/location_title"
                 android:layout_marginBottom="8dp"
                 android:textAlignment="center"
-                tools:text="coords" />
+                tools:text="coordinates" />
 
             <TextView
                 android:id="@+id/location_country_label"
