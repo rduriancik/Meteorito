@@ -16,13 +16,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingLeft="8dp"
-            android:paddingStart="8dp"
-            android:paddingRight="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="16dp"
+            android:orientation="vertical"
             android:paddingBottom="16dp"
-            android:orientation="vertical">
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="16dp">
 
             <TextView
                 android:id="@+id/location_title"
@@ -33,6 +33,12 @@
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@android:color/black" />
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/location_coordinates"
@@ -52,9 +58,9 @@
                 android:id="@+id/location_country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
                 tools:text="Country" />
 
             <TextView
