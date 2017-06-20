@@ -7,4 +7,10 @@
     <string name="location_region">Region:</string>
     <string name="location_unknown">unknown</string>
     <string name="list_meteorite_landings_count">Meteorite landings count</string>
+    <string name="iw_name">Name:</string>
+    <string name="iw_name_type">Name type:</string>
+    <string name="iw_year">Year:</string>
+    <string name="iw_mass">Mass:</string>
+    <string name="iw_fall">Fall:</string>
+    <string name="iw_class">Class:</string>
 </resources>
