@@ -1,9 +1,9 @@
 package com.example.robertduriancik.meteorito.api;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 
+import com.example.robertduriancik.meteorito.utils.NetworkUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -41,15 +41,6 @@ public class NasaDataApi {
         mService = retrofit.create(NasaDataService.class);
     }
 
-    private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
-    }
-
     private GsonConverterFactory createGsonConverterFactory() {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
@@ -69,7 +60,7 @@ public class NasaDataApi {
                 .cache(cache)
                 .addNetworkInterceptor(new Interceptor() {
                     @Override
-                    public Response intercept(Chain chain) throws IOException {
+                    public Response intercept(@NonNull Chain chain) throws IOException {
                         Response origResponse = chain.proceed(chain.request());
                         String cacheControl = origResponse.header("Cache-Control");
                         if (cacheControl == null ||
@@ -79,7 +70,7 @@ public class NasaDataApi {
                                 cacheControl.contains("max-age=0")) {
                             return origResponse.newBuilder()
                                     .removeHeader("Pragma")
-                                    .header("Cache-Control", "public, max-age=" + (60 * 60 * 24))
+                                    .header("Cache-Control", "public, max-age=" + (60 /* * 60 * 24*/)) // FIXME: 20.6.2017
                                     .build();
                         } else {
                             return origResponse;
@@ -88,9 +79,9 @@ public class NasaDataApi {
                 })
                 .addInterceptor(new Interceptor() {
                     @Override
-                    public Response intercept(Chain chain) throws IOException {
+                    public Response intercept(@NonNull Chain chain) throws IOException {
                         Request request = chain.request();
-                        if (!isNetworkAvailable(context)) {
+                        if (!NetworkUtils.isNetworkAvailable(context)) {
                             request = request.newBuilder()
                                     .removeHeader("Pragma")
                                     .header("Cache-Control", "public, only-if-cached, max-stale")
