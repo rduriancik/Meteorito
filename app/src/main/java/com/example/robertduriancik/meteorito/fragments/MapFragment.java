@@ -3,6 +3,7 @@ package com.example.robertduriancik.meteorito.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.CustomInfoWindowAdapter;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 import com.example.robertduriancik.meteorito.services.FetchAddressIntentService;
+import com.example.robertduriancik.meteorito.utils.NetworkUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -39,6 +42,7 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
+    private static final String TAG = "MapFragment";
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
@@ -112,9 +116,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mCoordinates.setText(formatLatLng(mMeteoriteLanding.getLatitude(), mMeteoriteLanding.getLongitude()));
         if (mMeteoriteAddress != null) {
             setAddressFields();
+        } else if (!NetworkUtils.isNetworkAvailable(mContext) || !Geocoder.isPresent()) {
+            Log.d(TAG, "onCreateView: no internet");
+            showFields(false);
         } else {
-            fetchAddress(mMeteoriteLanding);
             showLoading();
+            fetchAddress(mMeteoriteLanding);
         }
 
         mMapView.onCreate(mapViewBundle);
@@ -124,8 +131,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void setAddressFields() {
         if (mMeteoriteAddress != null) {
-            mCountry.setText(mMeteoriteAddress.getCountryName());
-            mRegion.setText(mMeteoriteAddress.getAdminArea());
+            if (mMeteoriteAddress.getCountryName() != null) {
+                mCountry.setTypeface(null, Typeface.NORMAL);
+                mCountry.setText(mMeteoriteAddress.getCountryName());
+            }
+
+            if (mMeteoriteAddress.getAdminArea() != null) {
+                mRegion.setTypeface(null, Typeface.NORMAL);
+                mRegion.setText(mMeteoriteAddress.getAdminArea());
+            }
         }
     }
 
@@ -139,14 +153,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void showFields() {
+    private void showFields(boolean showAddressFields) {
         mProgressBar.setVisibility(View.GONE);
 
         mCoordinates.setVisibility(View.VISIBLE);
-        mCountry.setVisibility(View.VISIBLE);
-        mCountryLabel.setVisibility(View.VISIBLE);
-        mRegion.setVisibility(View.VISIBLE);
-        mRegionLabel.setVisibility(View.VISIBLE);
+        if (showAddressFields) {
+            mCountry.setVisibility(View.VISIBLE);
+            mCountryLabel.setVisibility(View.VISIBLE);
+            mRegion.setVisibility(View.VISIBLE);
+            mRegionLabel.setVisibility(View.VISIBLE);
+        } else {
+            mCountry.setVisibility(View.GONE);
+            mCountryLabel.setVisibility(View.GONE);
+            mRegion.setVisibility(View.GONE);
+            mRegionLabel.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -257,16 +278,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
-            if (resultCode == FetchAddressIntentService.Constants.RESULT_SUCCESS) {
-                mMeteoriteAddress = resultData.getParcelable(FetchAddressIntentService.Constants.RESULT_ADDRESS_KEY);
-            }
-
             Activity activity = getActivity();
             if (activity != null) {
+                if (resultCode == FetchAddressIntentService.Constants.RESULT_ERROR) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showFields(false);
+                        }
+                    });
+
+                    return;
+                }
+
+                if (resultCode == FetchAddressIntentService.Constants.RESULT_SUCCESS) {
+                    mMeteoriteAddress = resultData.getParcelable(FetchAddressIntentService.Constants.RESULT_ADDRESS_KEY);
+                    Log.d(TAG, "onReceiveResult: address" + mMeteoriteAddress);
+                    setAddressFields();
+                }
+
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        showFields();
+                        showFields(true);
                     }
                 });
             }
