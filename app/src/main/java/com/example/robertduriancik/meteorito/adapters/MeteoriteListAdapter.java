@@ -50,18 +50,24 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
         this.mListener = listener;
     }
 
-    public void refresh(List<MeteoriteLanding> landings) {
+    public boolean refresh(List<MeteoriteLanding> landings) {
         if (landings != null) {
             mMeteoriteLandingList.clear();
-            add(landings);
+            return add(landings);
         }
+
+        return false;
     }
 
-    public void add(List<MeteoriteLanding> landings) {
+    public boolean add(List<MeteoriteLanding> landings) {
         if (landings != null) {
             mMeteoriteLandingList.addAll(landings);
             notifyDataSetChanged();
+
+            return true;
         }
+
+        return false;
     }
 
     public MeteoriteLanding getItem(int position) {
