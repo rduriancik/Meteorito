@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -49,6 +51,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private MeteoriteListAdapter mListAdapter;
     private int mLandingsCountValue;
 
+    @BindView(R.id.swipe_container)
+    SwipeRefreshLayout mSwipeContainer;
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
     @BindView(R.id.meteorite_landings_count)
@@ -86,11 +90,24 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         mLandingsCount.setText(String.valueOf(mLandingsCountValue));
 
         if (mMeteoriteLandings.isEmpty()) {
-            loadLandings();
+            loadLandings(false);
             loadLandingsCount();
         }
 
+        prepareSwipeContainer();
+
         return view;
+    }
+
+    private void prepareSwipeContainer() {
+        mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorAccent));
+        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadLandings(true);
+                loadLandingsCount();
+            }
+        });
     }
 
     private void prepareRecyclerView(RecyclerView.LayoutManager layoutManager) {
@@ -118,7 +135,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         }
     }
 
-    private void loadLandings() {
+    private void loadLandings(final boolean isRefreshing) {
         Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings();
 
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
@@ -129,11 +146,18 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                     mMeteoriteLandings.addAll(list);
                     mListAdapter.notifyDataSetChanged();
                 }
+
+                if (isRefreshing) {
+                    mSwipeContainer.setRefreshing(false);
+                }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Throwable t) {
                 Log.e(TAG, "onFailure: loadLandings ", t);
+                if (isRefreshing) {
+                    mSwipeContainer.setRefreshing(false);
+                }
             }
         });
     }
