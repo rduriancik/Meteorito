@@ -3,6 +3,7 @@ package com.example.robertduriancik.meteorito.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -121,7 +123,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (mMeteoriteAddress != null) {
             setAddressFields();
         } else if (!NetworkUtils.isNetworkAvailable(mContext) || !Geocoder.isPresent()) {
-            Log.d(TAG, "onCreateView: no internet");
             showFields(false);
         } else {
             showLoading();
@@ -234,17 +235,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mContext));
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
-            private boolean isShown;
+            private boolean isInfoWindowShown;
 
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (isShown) {
-                    isShown = false;
+                Projection projection = googleMap.getProjection();
+                Point markerScreenPosition = projection.toScreenLocation(marker.getPosition());
+                Point positionWithInfoWindow;
+
+                if (isInfoWindowShown) {
+                    isInfoWindowShown = false;
+
+                    positionWithInfoWindow = new Point(markerScreenPosition.x,
+                            markerScreenPosition.y);
+
                     marker.hideInfoWindow();
                 } else {
-                    isShown = true;
+                    isInfoWindowShown = true;
+
+                    positionWithInfoWindow = new Point(markerScreenPosition.x,
+                            markerScreenPosition.y - mMapView.getHeight() / 4);
+
                     marker.showInfoWindow();
                 }
+
+                googleMap.animateCamera(CameraUpdateFactory.newLatLng(
+                        projection.fromScreenLocation(positionWithInfoWindow)));
 
                 return true;
             }
