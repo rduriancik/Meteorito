@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -93,6 +94,13 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             loadLandingsCount();
         }
 
+        prepareSwipeContainer();
+
+        return view;
+    }
+
+    private void prepareSwipeContainer() {
+        mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorAccent));
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -100,8 +108,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                 loadLandingsCount();
             }
         });
-
-        return view;
     }
 
     private void prepareRecyclerView(RecyclerView.LayoutManager layoutManager) {
