@@ -55,6 +55,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     SwipeRefreshLayout mSwipeContainer;
     @BindView(R.id.meteorite_list)
     RecyclerView mRecyclerView;
+    @BindView(R.id.empty_list)
+    TextView mEmptyState;
     @BindView(R.id.meteorite_landings_count)
     TextView mLandingsCount;
 
@@ -90,6 +92,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         mLandingsCount.setText(String.valueOf(mLandingsCountValue));
 
         if (mMeteoriteLandings.isEmpty()) {
+            showEmptyState();
+
             loadLandings(false);
             loadLandingsCount();
         }
@@ -128,6 +132,16 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         mRecyclerView.setAdapter(mListAdapter);
     }
 
+    private void showEmptyState() {
+        mRecyclerView.setVisibility(View.GONE);
+        mEmptyState.setVisibility(View.VISIBLE);
+    }
+
+    private void showLoadedState() {
+        mEmptyState.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onItemClick(MeteoriteLanding meteoriteLanding) {
         if (mListener != null) {
@@ -142,12 +156,17 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             @Override
             public void onResponse(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Response<List<MeteoriteLanding>> response) {
                 List<MeteoriteLanding> list = response.body();
+                boolean loaded = false;
 
                 if (isRefreshing) {
-                    mListAdapter.refresh(list);
+                    loaded = mListAdapter.refresh(list);
                     mSwipeContainer.setRefreshing(false);
                 } else {
-                    mListAdapter.add(list);
+                    loaded = mListAdapter.add(list);
+                }
+
+                if (loaded) {
+                    showLoadedState();
                 }
             }
 
