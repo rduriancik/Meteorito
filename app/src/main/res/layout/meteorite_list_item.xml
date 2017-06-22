@@ -27,7 +27,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
-                tools:text="name type" />
+                tools:text="Name type" />
 
             <TextView
                 android:id="@+id/item_name"
@@ -46,21 +46,21 @@
                 android:id="@+id/item_fall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/item_name"
                 android:layout_alignLeft="@+id/item_name"
                 android:layout_alignStart="@id/item_name"
-                android:layout_marginRight="@dimen/label_margin"
-                android:layout_marginEnd="@dimen/label_margin"
+                android:layout_below="@+id/item_name"
                 android:layout_marginBottom="8dp"
-                tools:text="Fall" />
+                android:layout_marginEnd="@dimen/label_margin"
+                android:layout_marginRight="@dimen/label_margin"
+                tools:text="Fell in" />
 
             <TextView
                 android:id="@+id/item_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/item_fall"
-                android:layout_toRightOf="@+id/item_fall"
                 android:layout_toEndOf="@+id/item_fall"
+                android:layout_toRightOf="@+id/item_fall"
                 tools:text="Year" />
 
             <View
