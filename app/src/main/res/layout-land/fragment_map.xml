@@ -41,7 +41,14 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/location_coordinates"
+                android:id="@+id/location_lat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                tools:text="coordinates" />
+
+            <TextView
+                android:id="@+id/location_lng"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
