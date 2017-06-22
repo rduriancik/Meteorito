@@ -17,6 +17,7 @@ public class MeteoriteLanding implements Parcelable {
     private String fall;
     private double mass;
     private String name;
+    @SerializedName("nametype")
     private String nameType;
     @SerializedName("recclass")
     private String recClass;
@@ -24,7 +25,6 @@ public class MeteoriteLanding implements Parcelable {
     private double latitude;
     @SerializedName("reclong")
     private double longitude;
-    @SerializedName("year")
     private Date year;
 
     public long getId() {

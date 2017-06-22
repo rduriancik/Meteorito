@@ -30,6 +30,7 @@ public class FetchAddressIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
+        boolean error = false;
 
         Location location = intent.getParcelableExtra(Constants.LOCATION_DATA);
         mReceiver = intent.getParcelableExtra(Constants.RECEIVER);
@@ -39,20 +40,25 @@ public class FetchAddressIntentService extends IntentService {
                     location.getLongitude(), 1);
         } catch (IOException e) {
             Log.e(TAG, "onHandleIntent: Service not available", e);
+            error = true;
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "onHandleIntent: Invalid latitude or longitude - lat " +
                     location.getLatitude() + ", lng " + location.getLongitude(), e);
+            error = true;
         } catch (NullPointerException e) {
             Log.e(TAG, "onHandleIntent: Location is null", e);
+            error = true;
         }
 
-        if (addresses == null || addresses.size() == 0) {
+        if (error) {
+            deliverResultToReceiver(Constants.RESULT_ERROR, null);
+        } else if (addresses == null || addresses.size() == 0) {
             Log.e(TAG, "onHandleIntent: No address found");
-            deliverResultToReceiver(Constants.FAILURE_RESULT, null);
+            deliverResultToReceiver(Constants.RESULT_FAILURE, null);
         } else {
             Address address = addresses.get(0);
             Log.i(TAG, "onHandleIntent: Address found");
-            deliverResultToReceiver(Constants.SUCCESS_RESULT, address);
+            deliverResultToReceiver(Constants.RESULT_SUCCESS, address);
         }
     }
 
@@ -65,9 +71,10 @@ public class FetchAddressIntentService extends IntentService {
     }
 
     public static final class Constants {
-        public static final int SUCCESS_RESULT = 0;
-        public static final int FAILURE_RESULT = 1;
-        public static final String PACKAGE_NAME = "com.example.robertduriancik.meteorito";
+        public static final int RESULT_SUCCESS = 0;
+        public static final int RESULT_FAILURE = 1;
+        public static final int RESULT_ERROR = 2;
+        static final String PACKAGE_NAME = "com.example.robertduriancik.meteorito";
         public static final String LOCATION_DATA = PACKAGE_NAME + ".LOCATION_DATA";
         public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
         public static final String RESULT_ADDRESS_KEY = PACKAGE_NAME + "RESULT_ADDRESS_KEY";

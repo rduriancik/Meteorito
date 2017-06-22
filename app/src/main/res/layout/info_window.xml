@@ -1,31 +1,127 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<?xml version="1.0" encoding="utf-8"?><!--TOOD long name is out of layout-->
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    android:paddingEnd="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingStart="16dp">
 
-    <TextView
-        android:id="@+id/iw_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="TextView"/>
+    <TableRow>
 
-    <TextView
-        android:id="@+id/iw_meteorite_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="TextView"/>
+        <TextView
+            android:id="@+id/iw_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_span="2"
+            android:gravity="center"
+            android:text="@string/iw_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/iw_meteorite_class"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="TextView"/>
+    </TableRow>
 
-    <TextView
-        android:id="@+id/iw_meteorite_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="TextView"/>
-</LinearLayout>
+    <TableRow>
+
+        <TextView
+            android:id="@+id/iw_meteorite_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iw_name" />
+
+        <TextView
+            android:id="@+id/iw_meteorite_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="name" />
+
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/iw_meteorite_name_type_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/iw_name_type" />
+
+        <TextView
+            android:id="@+id/iw_meteorite_name_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="name type" />
+
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/iw_meteorite_class_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iw_class" />
+
+        <TextView
+            android:id="@+id/iw_meteorite_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="class" />
+
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/iw_meteorite_fall_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iw_fall" />
+
+        <TextView
+            android:id="@+id/iw_meteorite_fall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="fall" />
+
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/iw_meteorite_year_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iw_year" />
+
+        <TextView
+            android:id="@+id/iw_meteorite_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="year" />
+
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/iw_meteorite_mass_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iw_mass" />
+
+        <TextView
+            android:id="@+id/iw_meteorite_mass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="mass" />
+
+    </TableRow>
+
+</TableLayout>

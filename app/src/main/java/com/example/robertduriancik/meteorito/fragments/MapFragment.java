@@ -1,7 +1,10 @@
 package com.example.robertduriancik.meteorito.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,16 +16,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.CustomInfoWindowAdapter;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 import com.example.robertduriancik.meteorito.services.FetchAddressIntentService;
+import com.example.robertduriancik.meteorito.utils.NetworkUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -38,6 +44,7 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
+    private static final String TAG = "MapFragment";
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
@@ -48,10 +55,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @BindView(R.id.mapView)
     MapView mMapView;
-    @BindView(R.id.country)
-    TextView mTxtCountry;
-    @BindView(R.id.coordinates)
-    TextView mCoordinates;
+
+    @BindView(R.id.location_lat)
+    TextView mLat;
+    @BindView(R.id.location_lng)
+    TextView mLng;
+    @BindView(R.id.location_country)
+    TextView mCountry;
+    @BindView(R.id.location_country_label)
+    TextView mCountryLabel;
+    @BindView(R.id.location_region)
+    TextView mRegion;
+    @BindView(R.id.location_region_label)
+    TextView mRegionLabel;
+    @BindView(R.id.location_progressBar)
+    ProgressBar mProgressBar;
 
     public MapFragment() {
         // Required empty public constructor
@@ -82,7 +100,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (getArguments() != null) {
             mMeteoriteLanding = getArguments().getParcelable(MeteoriteLanding.class.getSimpleName());
         } else {
-            throw new IllegalStateException("This fragment must be create using the " +
+            throw new IllegalStateException("This fragment must be created using the " +
                     "newInstance(MeteoriteLanding meteoriteLanding) method.");
         }
     }
@@ -99,17 +117,64 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMeteoriteAddress = savedInstanceState.getParcelable(Address.class.getSimpleName());
         }
 
-        mCoordinates.setText(formatLatLng(mMeteoriteLanding.getLatitude(), mMeteoriteLanding.getLongitude()));
+        String[] coords = formatLatLng(mMeteoriteLanding.getLatitude(), mMeteoriteLanding.getLongitude());
+        mLat.setText(coords[0]);
+        mLng.setText(coords[1]);
         if (mMeteoriteAddress != null) {
-            // TODO set address fields
-            mTxtCountry.setText(mMeteoriteAddress.getCountryName());
+            setAddressFields();
+        } else if (!NetworkUtils.isNetworkAvailable(mContext) || !Geocoder.isPresent()) {
+            showFields(false);
         } else {
+            showLoading();
             fetchAddress(mMeteoriteLanding);
         }
 
         mMapView.onCreate(mapViewBundle);
         mMapView.getMapAsync(this);
         return view;
+    }
+
+    private void setAddressFields() {
+        if (mMeteoriteAddress != null) {
+            if (mMeteoriteAddress.getCountryName() != null) {
+                mCountry.setTypeface(null, Typeface.NORMAL);
+                mCountry.setText(mMeteoriteAddress.getCountryName());
+            }
+
+            if (mMeteoriteAddress.getAdminArea() != null) {
+                mRegion.setTypeface(null, Typeface.NORMAL);
+                mRegion.setText(mMeteoriteAddress.getAdminArea());
+            }
+        }
+    }
+
+    private void showLoading() {
+        mLat.setVisibility(View.GONE);
+        mLng.setVisibility(View.GONE);
+        mCountry.setVisibility(View.GONE);
+        mCountryLabel.setVisibility(View.GONE);
+        mRegion.setVisibility(View.GONE);
+        mRegionLabel.setVisibility(View.GONE);
+
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void showFields(boolean showAddressFields) {
+        mProgressBar.setVisibility(View.GONE);
+
+        mLat.setVisibility(View.VISIBLE);
+        mLng.setVisibility(View.VISIBLE);
+        if (showAddressFields) {
+            mCountry.setVisibility(View.VISIBLE);
+            mCountryLabel.setVisibility(View.VISIBLE);
+            mRegion.setVisibility(View.VISIBLE);
+            mRegionLabel.setVisibility(View.VISIBLE);
+        } else {
+            mCountry.setVisibility(View.GONE);
+            mCountryLabel.setVisibility(View.GONE);
+            mRegion.setVisibility(View.GONE);
+            mRegionLabel.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -163,19 +228,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         LatLng latLng = new LatLng(mMeteoriteLanding.getLatitude(), mMeteoriteLanding.getLongitude());
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mContext));
-        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            private boolean isInfoWindowShown;
+
             @Override
-            public void onInfoWindowClick(Marker marker) {
-                if (marker.isInfoWindowShown()) {
+            public boolean onMarkerClick(Marker marker) {
+                Projection projection = googleMap.getProjection();
+                Point markerScreenPosition = projection.toScreenLocation(marker.getPosition());
+                Point positionWithInfoWindow;
+
+                if (isInfoWindowShown) {
+                    isInfoWindowShown = false;
+
+                    positionWithInfoWindow = new Point(markerScreenPosition.x,
+                            markerScreenPosition.y);
+
                     marker.hideInfoWindow();
                 } else {
+                    isInfoWindowShown = true;
+
+                    positionWithInfoWindow = new Point(markerScreenPosition.x,
+                            markerScreenPosition.y - mMapView.getHeight() / 3);
+
                     marker.showInfoWindow();
                 }
+
+                googleMap.animateCamera(CameraUpdateFactory.newLatLng(
+                        projection.fromScreenLocation(positionWithInfoWindow)));
+
+                return true;
             }
         });
 
@@ -185,7 +272,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         marker.setTag(mMeteoriteLanding);
     }
 
-    private String formatLatLng(double latitude, double longitude) {
+    private String[] formatLatLng(double latitude, double longitude) {
         String[] lat = Location.convert(latitude, Location.FORMAT_SECONDS).replace(',', '.').split(":");
         String latStr = String.format(Locale.getDefault(), "%s°%s'%.1f\"%c", lat[0], lat[1], Float.valueOf(lat[2]),
                 (latitude > 0 ? 'N' : 'S'));
@@ -194,7 +281,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         String lngStr = String.format(Locale.getDefault(), "%s°%s'%.1f\"%c", lon[0], lon[1], Float.valueOf(lon[2]),
                 (longitude > 0 ? 'E' : 'W'));
 
-        return latStr + " " + lngStr;
+        return new String[]{latStr, lngStr};
     }
 
 
@@ -220,16 +307,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
-            if (resultCode == FetchAddressIntentService.Constants.SUCCESS_RESULT) {
-                mMeteoriteAddress = resultData.getParcelable(FetchAddressIntentService.Constants.RESULT_ADDRESS_KEY);
-                getActivity().runOnUiThread(new Runnable() {
+            Activity activity = getActivity();
+            if (activity != null) {
+                if (resultCode == FetchAddressIntentService.Constants.RESULT_ERROR) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showFields(false);
+                        }
+                    });
+
+                    return;
+                }
+
+                if (resultCode == FetchAddressIntentService.Constants.RESULT_SUCCESS) {
+                    mMeteoriteAddress = resultData.getParcelable(FetchAddressIntentService.Constants.RESULT_ADDRESS_KEY);
+                    Log.d(TAG, "onReceiveResult: address" + mMeteoriteAddress);
+                    setAddressFields();
+                }
+
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mTxtCountry.setText(mMeteoriteAddress.getCountryName());
+                        showFields(true);
                     }
                 });
-            } else {
-                Log.d(TAG, "onReceiveResult: failed");
             }
         }
     }
