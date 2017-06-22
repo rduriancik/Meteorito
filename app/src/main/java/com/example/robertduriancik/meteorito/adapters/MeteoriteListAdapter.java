@@ -1,5 +1,6 @@
 package com.example.robertduriancik.meteorito.adapters;
 
+import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,10 +85,14 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
 
         @BindView(R.id.item_name)
         TextView mName;
+        @BindView(R.id.item_name_type)
+        TextView mNameType;
         @BindView(R.id.item_class)
         TextView mClass;
         @BindView(R.id.item_mass)
         TextView mMass;
+        @BindView(R.id.item_fall)
+        TextView mFall;
         @BindView(R.id.item_year)
         TextView mYear;
 
@@ -96,10 +101,13 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
             ButterKnife.bind(this, itemView);
         }
 
+        @SuppressLint("SetTextI18n")
         void bind(final MeteoriteLanding item, final OnMeteoriteListAdapterInteractionListener listener) {
             mName.setText(item.getName());
+            mNameType.setText(item.getNameType());
             mClass.setText(item.getRecClass());
             mMass.setText(String.valueOf(item.getMass()));
+            mFall.setText(item.getFall() + " in");
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(item.getYear());
             mYear.setText(String.valueOf(calendar.get(Calendar.YEAR)));
