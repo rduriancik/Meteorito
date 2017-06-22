@@ -142,13 +142,12 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             @Override
             public void onResponse(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Response<List<MeteoriteLanding>> response) {
                 List<MeteoriteLanding> list = response.body();
-                if (list != null) {
-                    mMeteoriteLandings.addAll(list);
-                    mListAdapter.notifyDataSetChanged();
-                }
 
                 if (isRefreshing) {
+                    mListAdapter.refresh(list);
                     mSwipeContainer.setRefreshing(false);
+                } else {
+                    mListAdapter.add(list);
                 }
             }
 
