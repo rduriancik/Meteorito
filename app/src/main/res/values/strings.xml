@@ -6,7 +6,7 @@
     <string name="location_country">Country:</string>
     <string name="location_region">Region:</string>
     <string name="location_unknown">unknown</string>
-    <string name="list_meteorite_landings_count">The number of meteorite landings</string>
+    <string name="list_meteorite_landings_count">The number of meteorite landings since 2011</string>
     <string name="iw_name">Name:</string>
     <string name="iw_name_type">Name type:</string>
     <string name="iw_year">Year:</string>
