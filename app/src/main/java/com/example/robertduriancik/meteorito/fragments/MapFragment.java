@@ -232,23 +232,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(mContext));
-//        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-//            @Override
-//            public void onInfoWindowClick(Marker marker) {
-//                if (marker.isInfoWindowShown()) {
-//                    marker.hideInfoWindow();
-//                } else {
-//                    marker.showInfoWindow();
-//                }
-//            }
-//        });
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            private boolean isShown;
+
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (marker.isInfoWindowShown()) {
+                if (isShown) {
+                    isShown = false;
                     marker.hideInfoWindow();
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 } else {
+                    isShown = true;
                     marker.showInfoWindow();
                 }
 
