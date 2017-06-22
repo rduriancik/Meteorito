@@ -254,7 +254,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     isInfoWindowShown = true;
 
                     positionWithInfoWindow = new Point(markerScreenPosition.x,
-                            markerScreenPosition.y - mMapView.getHeight() / 4);
+                            markerScreenPosition.y - mMapView.getHeight() / 3);
 
                     marker.showInfoWindow();
                 }
