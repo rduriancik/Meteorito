@@ -9,7 +9,6 @@
     android:divider="@drawable/divider"
     tools:context="com.example.robertduriancik.meteorito.activities.MainActivity">
 
-    <!--TODO padding of fragment container, divider color-->
     <fragment
         android:id="@+id/fragment"
         android:name="com.example.robertduriancik.meteorito.fragments.MeteoriteListFragment"
