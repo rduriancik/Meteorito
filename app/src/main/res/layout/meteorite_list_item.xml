@@ -9,7 +9,10 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
         app:cardCornerRadius="@dimen/cardview_default_radius"
         app:cardElevation="@dimen/cardview_default_elevation">
 
@@ -26,7 +29,9 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/colorSecondaryText"
                 tools:text="Name type" />
 
             <TextView
@@ -38,8 +43,12 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:layout_marginTop="24dp"
+                android:layout_toLeftOf="@+id/item_name_type"
+                android:layout_toStartOf="@+id/item_name_type"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/colorPrimaryText"
+                android:textStyle="bold"
                 tools:text="Name" />
 
             <TextView
@@ -49,9 +58,10 @@
                 android:layout_alignLeft="@+id/item_name"
                 android:layout_alignStart="@id/item_name"
                 android:layout_below="@+id/item_name"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginEnd="@dimen/label_margin"
                 android:layout_marginRight="@dimen/label_margin"
+                android:textColor="@color/colorSecondaryText"
                 tools:text="Fell in" />
 
             <TextView
@@ -61,6 +71,7 @@
                 android:layout_alignBaseline="@+id/item_fall"
                 android:layout_toEndOf="@+id/item_fall"
                 android:layout_toRightOf="@+id/item_fall"
+                android:textColor="@color/colorSecondaryText"
                 tools:text="Year" />
 
             <View
@@ -68,20 +79,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/item_fall"
-                android:layout_marginBottom="8dp"
-                android:background="@color/dividerColor" />
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@color/colorDivider" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/divider"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:divider="@drawable/divider"
                 android:orientation="horizontal"
-                android:paddingBottom="8dp"
-                android:paddingEnd="16dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingStart="16dp"
                 android:showDividers="middle"
                 android:weightSum="3">
 
@@ -94,6 +109,7 @@
                     android:drawablePadding="@dimen/label_margin"
                     android:drawableStart="@drawable/ic_meteorite_class"
                     android:gravity="center_vertical"
+                    android:textColor="@color/colorSecondaryText"
                     tools:text="Class" />
 
                 <TextView
@@ -107,74 +123,14 @@
                     android:gravity="center_vertical"
                     android:paddingLeft="8dp"
                     android:paddingStart="8dp"
+                    android:textColor="@color/colorSecondaryText"
                     tools:ignore="RtlSymmetry"
                     tools:text="Mass" />
 
             </LinearLayout>
 
-            <!--<TextView-->
-            <!--android:id="@+id/class_label"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignLeft="@+id/item_name"-->
-            <!--android:layout_alignStart="@+id/item_name"-->
-            <!--android:layout_below="@+id/divider"-->
-            <!--android:layout_marginEnd="@dimen/label_margin"-->
-            <!--android:layout_marginRight="@dimen/label_margin"-->
-            <!--android:text="Class:" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/item_class"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignBaseline="@+id/class_label"-->
-            <!--android:layout_toEndOf="@+id/class_label"-->
-            <!--android:layout_toRightOf="@id/class_label"-->
-            <!--tools:text="Class" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/mass_label"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignLeft="@+id/item_name"-->
-            <!--android:layout_alignStart="@+id/item_name"-->
-            <!--android:layout_below="@+id/class_label"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:layout_marginEnd="@dimen/label_margin"-->
-            <!--android:layout_marginRight="@dimen/label_margin"-->
-            <!--android:text="Mass:" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/item_mass"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignBaseline="@+id/mass_label"-->
-            <!--android:layout_toEndOf="@+id/class_label"-->
-            <!--android:layout_toRightOf="@+id/class_label"-->
-            <!--tools:text="Mass" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/year_label"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/divider"-->
-            <!--android:layout_marginEnd="@dimen/label_margin"-->
-            <!--android:layout_marginRight="@dimen/label_margin"-->
-            <!--android:layout_toLeftOf="@+id/item_year"-->
-            <!--android:layout_toStartOf="@+id/item_year"-->
-            <!--android:text="Year:" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/item_year"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignBaseline="@+id/year_label"-->
-            <!--android:layout_alignParentEnd="true"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_marginEnd="16dp"-->
-            <!--android:layout_marginRight="16dp"-->
-            <!--tools:text="Year" />-->
-
         </RelativeLayout>
+
     </android.support.v7.widget.CardView>
+
 </LinearLayout>
