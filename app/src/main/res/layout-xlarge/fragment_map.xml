@@ -21,6 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="1dp"
         app:cardElevation="6dp">
 
         <RelativeLayout
@@ -43,7 +45,7 @@
                 android:text="@string/location_title"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/colorIcons" />
 
             <ProgressBar
                 android:id="@+id/location_progressBar"
@@ -58,8 +60,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/location_title"
-                android:gravity="center"
                 android:layout_marginBottom="8dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
@@ -69,6 +71,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:textAlignment="center"
+                    android:textColor="@color/colorIcons"
                     tools:text="coordinates" />
 
                 <TextView
@@ -76,6 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/colorIcons"
                     tools:text="coordinates" />
 
             </LinearLayout>
@@ -89,7 +93,8 @@
                 android:layout_below="@+id/coordinates"
                 android:layout_marginEnd="@dimen/label_margin"
                 android:layout_marginRight="@dimen/label_margin"
-                android:text="@string/location_country" />
+                android:text="@string/location_country"
+                android:textColor="@color/colorIcons" />
 
             <TextView
                 android:id="@+id/location_country"
@@ -103,6 +108,7 @@
                 android:layout_toRightOf="@+id/location_country_label"
                 android:layout_toStartOf="@+id/location_region_label"
                 android:text="@string/location_unknown"
+                android:textColor="@color/colorIcons"
                 android:textStyle="italic" />
 
             <TextView
@@ -114,7 +120,8 @@
                 android:layout_marginRight="@dimen/label_margin"
                 android:layout_toLeftOf="@+id/location_region"
                 android:layout_toStartOf="@+id/location_region"
-                android:text="@string/location_region" />
+                android:text="@string/location_region"
+                android:textColor="@color/colorIcons" />
 
             <TextView
                 android:id="@+id/location_region"
@@ -124,6 +131,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:text="@string/location_unknown"
+                android:textColor="@color/colorIcons"
                 android:textStyle="italic" />
 
         </RelativeLayout>
