@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         app:cardCornerRadius="1dp"
-        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardBackgroundColor="@color/colorPrimaryLight"
         app:cardElevation="6dp">
 
         <LinearLayout
@@ -32,8 +32,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/location_title"
                 android:textAlignment="center"
+                android:layout_marginBottom="@dimen/label_margin"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textColor="@color/colorIcons" />
+                android:textColor="@color/colorTextInverse" />
 
             <ProgressBar
                 android:id="@+id/location_progressBar"
@@ -47,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/colorIcons"
+                android:textColor="@color/colorTextInverse"
                 tools:text="coordinates" />
 
             <TextView
@@ -56,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:textAlignment="center"
-                android:textColor="@color/colorIcons"
+                android:textColor="@color/colorTextInverse"
                 tools:text="coordinates" />
 
             <TextView
@@ -64,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/location_country"
-                android:textColor="@color/colorIcons" />
+                android:textColor="@color/colorTextInverse" />
 
             <TextView
                 android:id="@+id/location_country"
@@ -74,7 +75,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/location_unknown"
-                android:textColor="@color/colorIcons"
+                android:textColor="@color/colorTextInverse"
                 android:textStyle="italic" />
 
             <TextView
@@ -82,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/location_region"
-                android:textColor="@color/colorIcons" />
+                android:textColor="@color/colorTextInverse" />
 
             <TextView
                 android:id="@+id/location_region"
@@ -91,7 +92,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/location_unknown"
-                android:textColor="@color/colorIcons"
+                android:textColor="@color/colorTextInverse"
                 android:textStyle="italic" />
 
         </LinearLayout>
