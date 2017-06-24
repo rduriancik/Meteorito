@@ -237,7 +237,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         mProgressBar.setVisibility(View.VISIBLE);
 
         final Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(10, offset);
-        mRecyclerView.post(new Runnable() {
+        mRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
@@ -254,7 +254,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                     }
                 });
             }
-        });
+        }, 1000);
 
     }
 
