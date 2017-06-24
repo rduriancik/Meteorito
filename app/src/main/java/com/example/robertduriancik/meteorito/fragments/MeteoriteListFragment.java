@@ -2,12 +2,14 @@ package com.example.robertduriancik.meteorito.fragments;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -89,7 +91,20 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void showLegend() {
+        Context context = getContext();
+        View legendView = View.inflate(context, R.layout.legend_dialog, null);
 
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setView(legendView)
+                .setTitle("Legend")
+                .setPositiveButton(R.string.dialog_close, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Dialog closed
+                    }
+                })
+                .setCancelable(true)
+                .show();
     }
 
     @Override
