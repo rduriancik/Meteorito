@@ -20,4 +20,9 @@
     <string name="about_text">Meteorito is an Android application for displaying data on meteorites that have landed on Earth since 2011.</string>
     <string name="about_credits">Icons used/derived from www.flatpick.com</string>
     <string name="about_copyright">Copyright \u00a9 2017 Róbert Ďuriančík</string>
+    <string name="legend_mass">Mass in grams</string>
+    <string name="legend_class">Meteorite classification</string>
+    <string name="legend_type">\'Valid\' is for most meteorites and \'Relict\' are for objects that were once meteorites but are now highly altered by weathering on Earth</string>
+    <string name="description_mass_in_grams">Mass in grams icon</string>
+    <string name="description_meteorite_classification">Meteorite classification icon</string>
 </resources>

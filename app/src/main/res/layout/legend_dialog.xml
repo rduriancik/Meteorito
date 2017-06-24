@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingEnd="?attr/dialogPreferredPadding"
+    android:paddingLeft="?attr/dialogPreferredPadding"
+    android:paddingRight="?attr/dialogPreferredPadding"
+    android:paddingStart="?attr/dialogPreferredPadding"
+    android:paddingTop="?attr/dialogPreferredPadding"
+    android:shrinkColumns="1">
+
+    <TableRow
+        android:layout_marginBottom="8dp"
+        android:gravity="center">
+
+        <ImageView
+            android:contentDescription="@string/description_meteorite_classification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_meteorite_class" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/legend_class"
+            android:textColor="@color/colorPrimaryText" />
+    </TableRow>
+
+    <TableRow android:layout_marginBottom="8dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_span="2"
+            android:background="@color/colorDivider" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_marginBottom="8dp"
+        android:gravity="center">
+
+        <ImageView
+            android:contentDescription="@string/description_mass_in_grams"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_meteorite_mass" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/legend_mass"
+            android:textColor="@color/colorPrimaryText" />
+    </TableRow>
+
+    <TableRow android:layout_marginBottom="8dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_span="2"
+            android:background="@color/colorDivider" />
+
+    </TableRow>
+
+    <TableRow android:gravity="top|center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Valid/Relict"
+            android:textColor="@color/colorPrimaryText"
+            android:textStyle="italic"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/legend_type"
+            android:textColor="@color/colorPrimaryText" />
+    </TableRow>
+
+</TableLayout>
