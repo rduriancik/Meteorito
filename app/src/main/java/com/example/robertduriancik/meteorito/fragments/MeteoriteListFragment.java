@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -172,6 +173,12 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             }
         });
         mRecyclerView.setAdapter(mListAdapter);
+
+        RecyclerView.ItemAnimator animator = new DefaultItemAnimator();
+        animator.setAddDuration(700);
+        animator.setChangeDuration(700);
+        mRecyclerView.setItemAnimator(animator);
+
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int totalItemsCount) {
@@ -203,18 +210,29 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
             public void onResponse(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Response<List<MeteoriteLanding>> response) {
-                List<MeteoriteLanding> list = response.body();
-                boolean loaded;
+                final List<MeteoriteLanding> list = response.body();
 
-                if (isRefreshing) {
-                    loaded = mListAdapter.refresh(list);
-                    mSwipeContainer.setRefreshing(false);
-                } else {
-                    loaded = mListAdapter.add(list);
-                }
-
-                if (loaded) {
+                if (list != null && !list.isEmpty()) {
                     showLoadedState();
+
+                    if (isRefreshing) {
+                        mRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mListAdapter.refresh(list);
+                            }
+                        });
+
+                        mSwipeContainer.setRefreshing(false);
+                    } else {
+                        mRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mListAdapter.add(list);
+                            }
+                        });
+
+                    }
                 }
             }
 
@@ -237,25 +255,25 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         mProgressBar.setVisibility(View.VISIBLE);
 
         final Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, offset);
-        mRecyclerView.postDelayed(new Runnable() {
+        landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
-            public void run() {
-                landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
+            public void onResponse(@NonNull Call<List<MeteoriteLanding>> call, @NonNull final Response<List<MeteoriteLanding>> response) {
+                mRecyclerView.postDelayed(new Runnable() {
                     @Override
-                    public void onResponse(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Response<List<MeteoriteLanding>> response) {
+                    public void run() {
                         mListAdapter.add(response.body());
                         mProgressBar.setVisibility(View.GONE);
                     }
+                }, 1000);
 
-                    @Override
-                    public void onFailure(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Throwable t) {
-                        Log.e(TAG, "onFailure: loadMoreLandings ", t);
-                        mProgressBar.setVisibility(View.GONE);
-                    }
-                });
             }
-        }, 1000);
 
+            @Override
+            public void onFailure(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Throwable t) {
+                Log.e(TAG, "onFailure: loadMoreLandings ", t);
+                mProgressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void loadLandingsCount() {
