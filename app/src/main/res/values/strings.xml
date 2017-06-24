@@ -14,4 +14,5 @@
     <string name="iw_fall">Fall:</string>
     <string name="iw_class">Class:</string>
     <string name="empty_list_text">No meteorite landings</string>
+    <string name="menu_about">About</string>
 </resources>
