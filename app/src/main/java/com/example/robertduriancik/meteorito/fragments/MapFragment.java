@@ -126,7 +126,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             showFields(false);
         } else {
             showLoading();
-            fetchAddress(mMeteoriteLanding);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    fetchAddress(mMeteoriteLanding);
+                }
+            }, 1000);
+
         }
 
         mMapView.onCreate(mapViewBundle);

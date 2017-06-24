@@ -17,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdapter.MeteoriteItemViewHolder> {
+    private static final String TAG = "MeteoriteListAdapter";
 
     public interface OnMeteoriteListAdapterInteractionListener {
         void onItemClick(MeteoriteLanding meteoriteLanding);
@@ -54,6 +55,7 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
     public boolean refresh(List<MeteoriteLanding> landings) {
         if (landings != null) {
             mMeteoriteLandingList.clear();
+            notifyDataSetChanged();
             return add(landings);
         }
 
@@ -62,8 +64,9 @@ public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdap
 
     public boolean add(List<MeteoriteLanding> landings) {
         if (landings != null) {
+            int posStart = mMeteoriteLandingList.size();
             mMeteoriteLandingList.addAll(landings);
-            notifyDataSetChanged();
+            notifyItemRangeInserted(posStart, landings.size());
 
             return true;
         }

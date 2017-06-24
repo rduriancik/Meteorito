@@ -22,7 +22,7 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         app:cardCornerRadius="1dp"
-        app:cardBackgroundColor="@color/colorPrimaryLight"
+        app:cardBackgroundColor="@color/colorPrimary"
         app:cardElevation="6dp">
 
         <ScrollView
