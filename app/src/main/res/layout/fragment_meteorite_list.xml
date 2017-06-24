@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
+            android:background="@color/backgroundColor"
             android:gravity="center_vertical">
 
             <TextView
@@ -26,7 +27,7 @@
                 android:drawableTop="@drawable/meteorite_list_empty"
                 android:text="@string/empty_list_text"
                 android:textAlignment="center"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="#969696"
                 android:textSize="24sp"
                 android:visibility="gone" />
 
@@ -53,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="1dp"
-        app:cardBackgroundColor="@color/colorPrimaryLight"
+        app:cardBackgroundColor="@color/colorPrimary"
         app:cardElevation="16dp">
 
         <LinearLayout
