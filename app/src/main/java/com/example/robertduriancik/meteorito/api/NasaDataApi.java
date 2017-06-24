@@ -69,7 +69,6 @@ public class NasaDataApi {
                                 cacheControl.contains("must-revalidate") ||
                                 cacheControl.contains("max-age=0")) {
                             return origResponse.newBuilder()
-                                    .removeHeader("Pragma")
                                     .header("Cache-Control", "public, max-age=" + (60 /* * 60 * 24*/)) // FIXME: 20.6.2017
                                     .build();
                         } else {
@@ -83,7 +82,6 @@ public class NasaDataApi {
                         Request request = chain.request();
                         if (!NetworkUtils.isNetworkAvailable(context)) {
                             request = request.newBuilder()
-                                    .removeHeader("Pragma")
                                     .header("Cache-Control", "public, only-if-cached, max-stale")
                                     .build();
                         }

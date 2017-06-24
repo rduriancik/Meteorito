@@ -19,7 +19,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.MeteoriteListAdapter;
@@ -27,6 +29,7 @@ import com.example.robertduriancik.meteorito.api.NasaDataApi;
 import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 import com.example.robertduriancik.meteorito.models.MeteoriteLandingsCount;
+import com.example.robertduriancik.meteorito.utils.EndlessRecyclerOnScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +65,8 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     RecyclerView mRecyclerView;
     @BindView(R.id.empty_list)
     TextView mEmptyState;
+    @BindView(R.id.item_progress_bar)
+    ProgressBar mProgressBar;
     @BindView(R.id.meteorite_landings_count)
     TextView mLandingsCount;
 
@@ -151,7 +156,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         });
     }
 
-    private void prepareRecyclerView(RecyclerView.LayoutManager layoutManager) {
+    private void prepareRecyclerView(LinearLayoutManager layoutManager) {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
@@ -167,6 +172,12 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
             }
         });
         mRecyclerView.setAdapter(mListAdapter);
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int totalItemsCount) {
+                loadMoreLandings(totalItemsCount);
+            }
+        });
     }
 
     private void showEmptyState() {
@@ -187,7 +198,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void loadLandings(final boolean isRefreshing) {
-        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings();
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, 0);
 
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
@@ -215,6 +226,36 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
                 }
             }
         });
+    }
+
+    private void loadMoreLandings(int offset) {
+        if (offset == mLandingsCountValue) {
+            Toast.makeText(getContext(), "All items were loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        final Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, offset);
+        mRecyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Response<List<MeteoriteLanding>> response) {
+                        mListAdapter.add(response.body());
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<List<MeteoriteLanding>> call, @NonNull Throwable t) {
+                        Log.e(TAG, "onFailure: loadMoreLandings ", t);
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }, 1000);
+
     }
 
     private void loadLandingsCount() {
