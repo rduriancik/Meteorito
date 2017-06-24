@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
  */
 
 public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
+    private static final String TAG = "EndlessRecyclerOnScroll";
+
     // The minimum amount of items to have below your current scroll position
     // before mLoading more.
     private static final int VISIBLE_THRESHOLD = 1;
@@ -33,7 +35,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         // If the total item count is zero and the previous isn't, assume the
         // list is invalidated and should be reset back to initial state
         if (totalItemCount < mPreviousTotalItemCount) {
-            this.mPreviousTotalItemCount = totalItemCount;
+            this.mPreviousTotalItemCount = 0;
             if (totalItemCount == 0) {
                 this.mLoading = true;
             }

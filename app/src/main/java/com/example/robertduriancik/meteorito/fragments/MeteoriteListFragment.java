@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.robertduriancik.meteorito.R;
 import com.example.robertduriancik.meteorito.adapters.MeteoriteListAdapter;
@@ -228,6 +229,11 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void loadMoreLandings(int offset) {
+        if (offset == mLandingsCountValue) {
+            Toast.makeText(getContext(), "All items were loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         mProgressBar.setVisibility(View.VISIBLE);
 
         final Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(10, offset);
