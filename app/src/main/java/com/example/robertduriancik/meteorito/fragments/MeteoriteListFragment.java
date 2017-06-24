@@ -198,7 +198,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     private void loadLandings(final boolean isRefreshing) {
-        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(10, 0);
+        Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, 0);
 
         landingCall.enqueue(new Callback<List<MeteoriteLanding>>() {
             @Override
@@ -236,7 +236,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
         mProgressBar.setVisibility(View.VISIBLE);
 
-        final Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(10, offset);
+        final Call<List<MeteoriteLanding>> landingCall = mNasaDataService.getMeteoriteLandings(50, offset);
         mRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
