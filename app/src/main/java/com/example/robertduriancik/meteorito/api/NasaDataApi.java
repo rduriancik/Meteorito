@@ -88,7 +88,7 @@ public class NasaDataApi {
                         return chain.proceed(request);
                     }
                 })
-                .addInterceptor(logging)
+//                .addInterceptor(logging)
                 ;
 
         return httpClientBuilder.build();

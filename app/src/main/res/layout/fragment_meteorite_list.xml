@@ -24,7 +24,7 @@
                 android:id="@+id/empty_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/meteorite_list_empty"
+                android:drawableTop="@drawable/meteorite_empty"
                 android:text="@string/empty_list_text"
                 android:textAlignment="center"
                 android:textColor="#969696"

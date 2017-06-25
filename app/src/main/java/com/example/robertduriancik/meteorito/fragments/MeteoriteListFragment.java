@@ -142,9 +142,9 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
         if (mMeteoriteLandings.isEmpty()) {
             showEmptyState();
-
-            loadLandings(false);
-            loadLandingsCount();
+            Log.d(TAG, "onCreateView: called");
+//            loadLandings(false);
+//            loadLandingsCount();
         }
 
         prepareSwipeContainer();
@@ -171,7 +171,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         mListAdapter.addOnMeteoriteListAdapterInteractionListener(this);
         mListAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
-            public void onChanged() {
+            public void onItemRangeInserted(int positionStart, int itemCount) {
                 MeteoriteLanding landing = mListAdapter.getItem(0);
                 if (mListener != null && landing != null) {
                     mListener.onDataLoaded(landing);
@@ -372,17 +372,14 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive: called");
-
             if (NetworkUtils.isNetworkAvailable(context)) {
-                if (mMeteoriteLandings != null && mMeteoriteLandings.isEmpty()) {
-                    loadLandings(false);
-                    loadLandingsCount();
-                }
+                mEndlessRecyclerOnScrollListener.resetLoading();
+            }
 
-                if (mEndlessRecyclerOnScrollListener.isLoading()) {
-                    Log.d(TAG, "onReceive: set false");
-                    mEndlessRecyclerOnScrollListener.setLoading(false);
-                }
+            if (mMeteoriteLandings != null && mMeteoriteLandings.isEmpty()) {
+                Log.d(TAG, "onReceive: " + mMeteoriteLandings.size() + " adapter " + mListAdapter.getItemCount());
+                loadLandings(false);
+                loadLandingsCount();
             }
         }
     };
