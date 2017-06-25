@@ -1,8 +1,12 @@
 package com.example.robertduriancik.meteorito.fragments;
 
 import android.animation.ValueAnimator;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,6 +35,7 @@ import com.example.robertduriancik.meteorito.api.NasaDataService;
 import com.example.robertduriancik.meteorito.models.MeteoriteLanding;
 import com.example.robertduriancik.meteorito.models.MeteoriteLandingsCount;
 import com.example.robertduriancik.meteorito.utils.EndlessRecyclerOnScrollListener;
+import com.example.robertduriancik.meteorito.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +63,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private NasaDataService mNasaDataService;
     private ArrayList<MeteoriteLanding> mMeteoriteLandings;
     private MeteoriteListAdapter mListAdapter;
+    private EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
     private int mLandingsCountValue;
 
     @BindView(R.id.swipe_container)
@@ -179,12 +185,14 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         animator.setChangeDuration(700);
         mRecyclerView.setItemAnimator(animator);
 
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+        mEndlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int totalItemsCount) {
                 loadMoreLandings(totalItemsCount);
             }
-        });
+        };
+
+        mRecyclerView.addOnScrollListener(mEndlessRecyclerOnScrollListener);
     }
 
     private void showEmptyState() {
@@ -306,6 +314,19 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        getContext().registerReceiver(mReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getContext().unregisterReceiver(mReceiver);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(LIST_STATE_KEY, mRecyclerView.getLayoutManager().onSaveInstanceState());
         outState.putParcelableArrayList(LIST_CONTENT_KEY, mMeteoriteLandings);
@@ -346,4 +367,23 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
         void onDataLoaded(MeteoriteLanding meteoriteLanding);
     }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive: called");
+
+            if (NetworkUtils.isNetworkAvailable(context)) {
+                if (mMeteoriteLandings != null && mMeteoriteLandings.isEmpty()) {
+                    loadLandings(false);
+                    loadLandingsCount();
+                }
+
+                if (mEndlessRecyclerOnScrollListener.isLoading()) {
+                    Log.d(TAG, "onReceive: set false");
+                    mEndlessRecyclerOnScrollListener.setLoading(false);
+                }
+            }
+        }
+    };
 }

@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
  */
 
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-    private static final String TAG = "CustomInfoWindowAdapter";
 
     private Context mContext;
 

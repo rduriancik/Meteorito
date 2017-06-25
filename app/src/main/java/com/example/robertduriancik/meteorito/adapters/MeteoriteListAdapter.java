@@ -17,7 +17,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MeteoriteListAdapter extends RecyclerView.Adapter<MeteoriteListAdapter.MeteoriteItemViewHolder> {
-    private static final String TAG = "MeteoriteListAdapter";
 
     public interface OnMeteoriteListAdapterInteractionListener {
         void onItemClick(MeteoriteLanding meteoriteLanding);
