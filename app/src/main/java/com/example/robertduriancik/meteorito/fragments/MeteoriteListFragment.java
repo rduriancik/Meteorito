@@ -142,9 +142,6 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
 
         if (mMeteoriteLandings.isEmpty()) {
             showEmptyState();
-            Log.d(TAG, "onCreateView: called");
-//            loadLandings(false);
-//            loadLandingsCount();
         }
 
         prepareSwipeContainer();
@@ -371,13 +368,11 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive: called");
             if (NetworkUtils.isNetworkAvailable(context)) {
                 mEndlessRecyclerOnScrollListener.resetLoading();
             }
 
             if (mMeteoriteLandings != null && mMeteoriteLandings.isEmpty()) {
-                Log.d(TAG, "onReceive: " + mMeteoriteLandings.size() + " adapter " + mListAdapter.getItemCount());
                 loadLandings(false);
                 loadLandingsCount();
             }

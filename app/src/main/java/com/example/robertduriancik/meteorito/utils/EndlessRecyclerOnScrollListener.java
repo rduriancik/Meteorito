@@ -2,14 +2,12 @@ package com.example.robertduriancik.meteorito.utils;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 /**
  * Created by robert on 23.6.2017.
  */
 
 public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
-    private static final String TAG = "EndlessRecyclerOnScroll";
 
     private static final int VISIBLE_THRESHOLD = 1;
 
@@ -26,7 +24,6 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         int totalItemCount = mLayoutManager.getItemCount();
         int visibleItemCount = recyclerView.getChildCount();
         int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
-        Log.d(TAG, "onScrolled: total" + totalItemCount);
 
         if (totalItemCount < mPreviousTotalItemCount) {
             this.mPreviousTotalItemCount = 0;

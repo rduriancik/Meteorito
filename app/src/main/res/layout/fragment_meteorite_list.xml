@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/backgroundColor"
     tools:context="com.example.robertduriancik.meteorito.fragments.MeteoriteListFragment">
 
 
@@ -17,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:background="@color/backgroundColor"
             android:gravity="center_vertical">
 
             <TextView
