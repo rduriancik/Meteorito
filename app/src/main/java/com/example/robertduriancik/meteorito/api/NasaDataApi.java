@@ -69,7 +69,7 @@ public class NasaDataApi {
                                 cacheControl.contains("must-revalidate") ||
                                 cacheControl.contains("max-age=0")) {
                             return origResponse.newBuilder()
-                                    .header("Cache-Control", "public, max-age=" + (60 /* * 60 * 24*/)) // FIXME: 20.6.2017
+                                    .header("Cache-Control", "public, max-age=" + (60 * 60 * 24))
                                     .build();
                         } else {
                             return origResponse;
