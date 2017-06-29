@@ -125,7 +125,7 @@ public class MeteoriteListFragment extends Fragment implements MeteoriteListAdap
         View view = inflater.inflate(R.layout.fragment_meteorite_list, container, false);
         ButterKnife.bind(this, view);
 
-        mNasaDataService = new NasaDataApi(getContext()).getService();
+        mNasaDataService = NasaDataApi.getService(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         if (savedInstanceState != null) {

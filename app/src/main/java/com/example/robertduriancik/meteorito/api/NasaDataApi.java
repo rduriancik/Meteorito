@@ -29,19 +29,29 @@ public class NasaDataApi {
     private static final String NASA_DATA_API_ENDPOINT = "https://data.nasa.gov";
     private static final int CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
 
-    private final NasaDataService mService;
+    private static NasaDataService mService;
 
-    public NasaDataApi(final Context context) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(NASA_DATA_API_ENDPOINT)
-                .addConverterFactory(createGsonConverterFactory())
-                .client(createHttpClient(context))
-                .build();
-
-        mService = retrofit.create(NasaDataService.class);
+    private NasaDataApi() {
+        if (mService != null) {
+            throw new RuntimeException("Use getService(Context context) method to get the single instance of this class.");
+        }
     }
 
-    private GsonConverterFactory createGsonConverterFactory() {
+    public static NasaDataService getService(final Context context) {
+        if (mService == null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(NASA_DATA_API_ENDPOINT)
+                    .addConverterFactory(createGsonConverterFactory())
+                    .client(createHttpClient(context))
+                    .build();
+
+            mService = retrofit.create(NasaDataService.class);
+        }
+
+        return mService;
+    }
+
+    private static GsonConverterFactory createGsonConverterFactory() {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
                 .create();
@@ -49,7 +59,7 @@ public class NasaDataApi {
         return GsonConverterFactory.create(gson);
     }
 
-    private OkHttpClient createHttpClient(final Context context) {
+    private static OkHttpClient createHttpClient(final Context context) {
         Cache cache = new Cache(new File(context.getCacheDir(), "MeteoritoCache"), CACHE_SIZE);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -94,7 +104,4 @@ public class NasaDataApi {
         return httpClientBuilder.build();
     }
 
-    public NasaDataService getService() {
-        return mService;
-    }
 }
